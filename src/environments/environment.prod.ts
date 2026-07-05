@@ -5,7 +5,7 @@
 export const environment = {
     production: true,
     // URL: 'https://angular.pixelstrap.net/fastkart-admin/assets/data'
-    API_URL: 'http://10.103.96.28:8080/api',
+    API_URL: "https://admin_eshop.wurth.pe:8080/api",
     apiKey: 'WSq2$GD3!J!woU2gDK1p!cb3G',
     SECRET_KEY_CRYPTO: "6XJCIEJO41PQZNWJC4RRDC#$DF&%ff26",
     
