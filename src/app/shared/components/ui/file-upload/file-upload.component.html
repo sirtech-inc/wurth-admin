@@ -1,0 +1,70 @@
+<input #fileInput type="file" class="d-none" [accept]="allowExtensions.join(',')" [multiple]="allowMultiple"
+    (change)="onSelectedFiles(fileInput.files)">
+
+<ul class="image-select-list">
+    @if( !findFiles ) {
+    <li class="choosefile-input cursor-pointer" (click)="fileInput.click()"
+        [ngClass]="{'loading': showLoader}"
+    >
+        <i class="ri-add-line"></i>
+        @if(showLoader){ <i class="ri-loader-4-line loader-icon loader"></i>}
+    </li>
+    }@else {
+    <li class="p-0 d-inline-block file-upload-find-files">
+        <div class="d-flex justify-content-between align-items-center h-100">
+            <div (click)="fileInput.click()"
+                placement="top" ngbTooltip="Seleccione un archivo desde su equipo"
+                class="text-center w-50 attachment h-100 align-items-center justify-content-center d-flex cursor-pointer">
+                <i class="ri-add-line"></i></div>
+            <div class="h-100 border-end"></div>
+            <div (click)="onFindFiles()"
+                placement="top" ngbTooltip="Buscar los archivos ya registrados en el sistema"
+                class="text-center w-50 search h-100 align-items-center justify-content-center d-flex cursor-pointer"><i
+                    class="ri-search-line"></i></div>
+        </div>
+    </li>
+    }
+
+    <li *ngFor="let file of showFiles; let i = index;" [ngbTooltip]="file?.name ?? file?.file_name">
+
+        @if( file?.original_url ){
+        <img [src]="file?.original_url" [alt]="file?.name" class="img-fluid">
+        }@else{
+            @switch (file?.extension.toLowerCase()) {
+            @case ('pdf') { <i class="ri-file-pdf-line fs-1"></i> }
+            @case ('doc') { <i class="ri-file-word-line fs-1"></i> }
+            @case ('docx') { <i class="ri-file-word-line fs-1"></i> }
+            @case ('xls') { <i class="ri-file-excel-line fs-1"></i> }
+            @case ('xlsx') { <i class="ri-file-excel-line fs-1"></i> }
+            @case ('png') { <i class="ri-image-line fs-1"></i> }
+            @case ('jpg') { <i class="ri-image-line fs-1"></i> }
+            @case ('jpeg') { <i class="ri-image-line fs-1"></i> }
+            @default { <i class="ri-file-line fs-1"></i> }
+            }
+        }
+        
+        <a href="javascript:void(0)" class="remove-icon" id="remove-icon{{i}}" (click)="onRemove(i);"><i class="ri-close-line text-white"></i></a>
+    </li>
+
+</ul>
+
+@if(textInfo){
+    @if(textInfoLang){ 
+        <p>{{ textInfo | translate }}</p> 
+    } @else {
+        <p>{{ textInfo }}</p>
+    }
+}
+
+<p class="help-text mb-0">
+    Permitidos : {{ allowExtensions.join(', ') }} / Peso máximo : {{ formatSize(
+    sizeMaxUploadMb, true ) }} / Cant.
+    máxima : {{ maxUploads }}
+</p>
+<app-alert-modal #alertModal></app-alert-modal>
+@if(opened){
+    <app-media-files-modal #mediaFilesModal 
+    (opened)="opened = $event" [module]="module"
+    (onSelect)="onSelectFile($event)"
+    ></app-media-files-modal>
+}

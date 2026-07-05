@@ -1,0 +1,14 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'packs'">
+    <div button >
+        <app-a-button [text]="'global_new'" [icon]="'add'" [link]="'/packs/create'" ></app-a-button>
+    </div>
+    <app-table 
+        [tableConfig]="tableConfig"
+        [hasCheckbox]="false"
+        [hasDuplicate]="false"
+        [topbar]="false"
+        (tableChanged)="onTableChange($event)"
+        (action)="onActionClicked($event)"
+        >
+    </app-table>
+</app-page-wrapper>

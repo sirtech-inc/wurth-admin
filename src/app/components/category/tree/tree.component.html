@@ -1,0 +1,31 @@
+<div class="theme-tree-box">
+    <!-- <input class="form-control" placeholder="{{ 'categories_search' | translate }}" [formControl]="treeSearch"> -->
+    <div class="flex justify-content-center p-2">
+        <p-selectButton
+                [options]="ecommerce"
+                optionLabel="description"
+                [(ngModel)]="selectedEcommerce"
+                optionValue="value"
+                (onChange)="onChangeEcommerce($event)"
+        />
+    </div>
+    <ul class="tree-main-ul" *ngIf="dataToShow?.length">
+        <li class="cursor-pointer">
+            <div>
+                <i class="tree-icon folder-icon" role="presentation"></i>
+                <span>{{ 'categories' | translate }}</span>
+            </div>
+            <ul>
+                <app-tree-node [node]="node" [displayKey]="displayKey" [recursionKey]="recursionKey"
+                    [categoryType]="categoryType" *ngFor="let node of dataToShow">
+                </app-tree-node>
+            </ul>
+        </li>
+    </ul>
+</div>
+<app-no-data 
+    [class]="'no-data-added category-no-data'" 
+    [image]="'assets/svg/no-category.svg'"
+    [text]="'categories_not_found'" 
+    *ngIf="!dataToShow?.length">
+</app-no-data>

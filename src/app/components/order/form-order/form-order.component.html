@@ -1,0 +1,125 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form">
+    <div class="vertical-tabs">
+        <div class="row">
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Estado'" [for]="'estado'" [required]="false">
+
+                    <input class="form-control" id="estado" type="text" readonly placeholder="Estado"
+                        formControlName="estado">
+                </app-form-fields>
+            </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Fecha de Pedido'" [for]="'fechaPedido'" [required]="false">
+
+                    <input class="form-control" id="fechaPedido" readonly type="text" placeholder="Fecha de Pedido"
+                        formControlName="fechaPedido">
+                </app-form-fields>
+            </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title  col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Número de Pedido'" [for]="'numeroOrden'" [required]="false">
+
+                    <input class="form-control" id="numeroOrden" readonly type="text" placeholder="Número de Pedido"
+                        formControlName="numeroOrden">
+                </app-form-fields>
+            </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Código de Cliente'" [for]="'codigoCliente'" [required]="false">
+
+                    <input class="form-control" id="codigoCliente" readonly type="text" placeholder="Código de Cliente"
+                        formControlName="codigoCliente">
+                </app-form-fields>
+            </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Dirección Fiscal'" [for]="'direccionFiscal'" [required]="false">
+
+                    <input class="form-control" id="direccionFiscal" readonly type="text" placeholder="Dirección Fiscal"
+                        formControlName="direccionFiscal">
+                </app-form-fields>
+            </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Dirección de Envío'" [for]="'direccionEntrega'" [required]="false">
+
+                    <input class="form-control" id="direccionEntrega" readonly type="text"
+                        placeholder="Dirección de Envío" formControlName="direccionEntrega">
+                </app-form-fields>
+            </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Lugar de Destino'" [for]="'lugarDestino'" [required]="false">
+
+                    <input class="form-control" id="lugarDestino" readonly type="text"
+                        placeholder="Lugar de Destino" formControlName="lugarDestino">
+                </app-form-fields>
+            </div>
+        </div>
+
+        <div class="table-responsive datatable-wrapper border-table">
+            <table class="table  all-package theme-table no-footer">
+                <tbody>
+                    <tr class="text-center">
+                        <th>N°</th>
+                        <th>Producto</th>
+                        <th>Código</th>
+                        <th>Cantidad</th>
+                        <th>Descuento</th>
+                        <th>Precio</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    @if(orderDetails && orderDetails.length > 0){
+                    @for(order of orderDetails; track order; let i = $index){
+                    <tr>
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ order.nameProducto }}</td>
+                        <td>{{ order.codigoProducto }}</td>
+                        <td>{{ order.cantidadTotalProducto }}</td>
+                        <td>{{ order.descuentoMaximoProducto | currency: 'S/' }}</td>
+                        <td>{{ order.precioUnitarioProducto | currency: 'S/' }}</td>
+                        <td>{{ order.subTotalProducto | currency: 'S/'}}</td>
+                    </tr>
+                    }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-6"></div>
+            <div class="col-4 text-end fw-bold">Subtotal:</div>
+            <div class="col-2 text-end">
+                <span>{{ subtotalCalculado | currency: 'S/' }}</span>
+            </div>
+        </div>
+
+
+        <div class="row mt-3">
+            <div class="col-6"></div>
+            <div class="col-4 text-end fw-bold">IGV (18%):</div>
+            <div class="col-2 text-end">
+                <span>{{ igvCalculado | currency: 'S/' }}</span>
+            </div>
+        </div>
+
+
+        <div class="row mt-3">
+            <div class="col-6"></div>
+            <div class="col-4 text-end fw-bold">Total:</div>
+            <div class="col-2 text-end">
+                <span>{{ totalCalculado | currency: 'S/' }}</span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <app-button [classExtra]="'btn-secondary'" [type]="'button'" [routerLink]="['/orders']">
+                Volver al listado
+            </app-button>
+        </div>
+
+    </div>
+
+</form>

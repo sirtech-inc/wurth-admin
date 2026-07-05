@@ -1,0 +1,30 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="onSave()">
+    
+    <app-form-fields [inline]="'vertical'" [label]="'tags_name' | translate " [for]="'name'" [required]="true">
+        <input class="form-control" type="text" placeholder="{{ 'tags_enter_name' | translate }}" name="name"
+            formControlName="name">
+        <div class="invalid-feedback" *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']">  {{ 'tags_required_name' | translate }}</div>
+    </app-form-fields>
+
+    <app-form-fields [inline]="'vertical'" [label]="'tags_description' | translate"
+        [for]="'description'" [required]="false">
+        <textarea class="form-control" placeholder="{{'tags_enter_description' | translate }}"
+            formControlName="description" rows="3"></textarea>
+    </app-form-fields>
+
+    <app-form-fields [inline]="'vertical'" [label]="'global_status' | translate" [for]="'status'"
+        [required]="false">
+        <div class="form-check form-switch ps-0">
+            <label class="switch">
+                <input type="checkbox" id="status" formControlName="status">
+                <span class="switch-state"></span>
+            </label>
+        </div>
+    </app-form-fields>
+
+    <div class="d-flex justify-content-end gap-2">
+        <app-button [id]="'user_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'" [routerLink]="['/tags']" >{{ 'global_cancel' | translate }}</app-button>
+        <app-button [id]="'tag_btn'">{{ 'global_save' | translate }}</app-button>
+    </div>
+
+</form>

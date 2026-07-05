@@ -1,0 +1,11 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'tags'">
+    <div button>
+        <app-a-button [text]="'global_new'" [icon]="'add'" [link]="'/tags/create'" ></app-a-button>
+    </div>
+    <app-table 
+        [topbar]="false"
+        [tableConfig]="tableConfig"
+        (tableChanged)="onTableChange($event)"
+        (action)="onActionClicked($event)">
+    </app-table>
+</app-page-wrapper>

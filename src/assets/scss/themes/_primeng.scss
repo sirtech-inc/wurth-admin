@@ -1,0 +1,16 @@
+.p-datatable {
+    .p-datatable-tbody > tr > td {
+      border-bottom-width: 1px!important;
+      border-bottom-color: #e2e8f0!important;
+  }
+  .p-datatable-thead > tr > th {
+        border-width: 0 0 1px 0!important;
+    border-bottom-color: #e2e8f0!important
+  }
+}
+
+.p-button{
+  &.p-button-sm{
+    font-size: 0.875rem!important;
+  }
+}

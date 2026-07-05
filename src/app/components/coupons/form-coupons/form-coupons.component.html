@@ -1,0 +1,582 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form"
+      (ngSubmit)="onSave()">
+
+    <div class="vertical-tabs">
+        <div class="row">
+            <div class="col-xl-3 col-lg-4">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-pills"
+                    orientation="vertical">
+
+                    <li ngbNavItem="tab_general" id="tab_general"
+                        [class.is-invalid]="tabError == 'tab_general'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{
+                                'coupons_tab_general' | translate
+                            }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="tab_general">
+
+                                <app-form-fields
+                                        [inline]="'vertical'"
+                                        [label]="'global_ecommerce'"
+                                        [for]="'global_ecommerce'"
+                                        [required]="true">
+                                    <select2 [data]="ecommerce$ | async"
+                                             class="custom-select"
+                                             [placeholder]="'global_selected_option' | translate"
+                                             [multiple]="true"
+                                             formControlName="ecommerce"
+                                             [value]="prepareEcommerce"
+                                    >
+                                    </select2>
+                                    <div class="invalid-feedback"
+                                         *ngIf="form.controls['ecommerce'].touched && form.controls['ecommerce'].errors?.['required']">
+                                        {{
+                                            "coupon_form_validator_ecommerce_required"
+                                                | translate
+                                        }}
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields
+                                        [inline]="'vertical'"
+                                        [label]="'coupons_name'"
+                                        [for]="'name'" [required]="true">
+                                    <input class="form-control" id="name"
+                                           type="text"
+                                           placeholder="{{ 'coupons_enter_name' | translate }}"
+                                           formControlName="name">
+                                    <div class="invalid-feedback"
+                                         *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']">
+                                        {{
+                                            "coupon_form_validator_name_required"
+                                                | translate
+                                        }}
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields
+                                        [inline]="'vertical'"
+                                        [label]="'coupons_description'"
+                                        [for]="'short_description'">
+                                    <textarea class="form-control"
+                                              id="sort_description"
+                                              formControlName="description"
+                                              placeholder="{{ 'coupons_enter_description' | translate }}"
+                                              rows="3"></textarea>
+                                </app-form-fields>
+
+                                <app-form-fields
+                                        [inline]="'vertical'"
+                                        [label]="'coupons_code'"
+                                        [required]="true">
+                                    <div class="input-group">
+                                        <input class="form-control" type="text"
+                                               formControlName="reference"/>
+                                        <button class="btn btn-secondary"
+                                                (click)="onGenerateCode()"
+                                                type="button">
+                                            <i class="ri-refresh-line ri-xl"></i>
+                                        </button>
+                                    </div>
+                                    <div class="invalid-feedback"
+                                         *ngIf="form.controls['reference'].touched && form.controls['reference'].errors?.['required']">
+                                        {{
+                                            "coupon_form_validator_code_required"
+                                                | translate
+                                        }}
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields
+                                        [inline]="'vertical'"
+                                        [label]="'global_status'"
+                                        [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox"
+                                                   formControlName="status">
+                                            <span class="switch-state"></span>
+                                        </label>
+                                    </div>
+                                </app-form-fields>
+                            </div>
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="tab_conditions" id="tab_conditions"
+                        [class.is-invalid]="tabError == 'tab_conditions'">
+                        <a ngbNavLink><i class="ri-code-line"></i>{{
+                                'coupons_tab_conditions' | translate
+                            }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="tab_conditions">
+
+                                <div class="row">
+                                    <div class="col">
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [labelClass]="'form-label form-label-title'"
+                                                [label]="'coupons_type'"
+                                                [required]="true">
+                                            <select2
+                                                    [data]="couponCustomer$ | async"
+                                                    class="custom-select"
+                                                    [placeholder]="'global_selected_option' | translate"
+                                                    [multiple]="false"
+                                                    formControlName="customer_type"
+                                                    [value]="prepareCouponCustomer">
+                                            </select2>
+                                            <div class="invalid-feedback"
+                                                 *ngIf="form.controls['customer_type'].touched && form.controls['customer_type'].errors?.['required']">
+                                                {{
+                                                    "coupon_form_validator_type_required"
+                                                        | translate
+                                                }}
+                                            </div>
+                                        </app-form-fields>
+                                    </div>
+                                    <div class="col">
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [labelClass]="'form-label form-label-title'"
+                                                [label]="'coupons_division'">
+                                            <select2 [data]="division$ | async"
+                                                     class="custom-select"
+                                                     [placeholder]="'global_selected_option' | translate"
+                                                     [multiple]="true"
+                                                     formControlName="division"
+                                                     [value]="prepareDivision">
+                                            </select2>
+                                        </app-form-fields>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <app-form-fields [inline]="'vertical'"
+                                                         [label]="'global_date_from'"
+                                                         [for]="'start_date'"
+                                                         [required]="true">
+                                            <div
+                                                    class="dp-hidden position-absolute custom-dp-dropdown">
+                                                <div class="input-group">
+                                                    <input name="datepicker"
+                                                           class="form-control"
+                                                           ngbDatepicker
+                                                           #datepicker="ngbDatepicker"
+                                                           [autoClose]="'outside'"
+                                                           (dateSelect)="onDateSelection($event)"
+                                                           [displayMonths]="displayMonths"
+                                                           [dayTemplate]="t"
+                                                           [navigation]="navigation"
+                                                           [outsideDays]="outsideDays"
+                                                           [startDate]="fromDate!"
+                                                           id="start_date"
+                                                           tabindex="-1" readonly
+                                                           [footerTemplate]="footerTemplate"
+                                                           [showWeekNumbers]="showWeekNumbers"/>
+                                                    <ng-template #t let-date
+                                                                 let-focused="focused">
+                                                        <span class="custom-day"
+                                                              [class.focused]="focused"
+                                                              [class.range]="isRange(date)"
+                                                              [class.faded]="isHovered(date) || isInside(date)"
+                                                              (mouseenter)="hoveredDate = date"
+                                                              (mouseleave)="hoveredDate = null">
+                                                            {{ date.day }}
+                                                        </span>
+                                                    </ng-template>
+
+                                                    <ng-template
+                                                        #footerTemplate>
+                                                        <hr class="my-0"/>
+                                                        <button
+                                                                class="btn btn-primary btn-sm m-2 float-start"
+                                                                (click)="model = today; datepicker.close()">
+                                                            {{
+                                                                "global_date_today"
+                                                                    | translate
+                                                            }}
+                                                        </button>
+                                                        <button
+                                                                class="btn btn-secondary btn-sm m-2 float-end"
+                                                                (click)="datepicker.close()">
+                                                            {{
+                                                                "global_date_close"
+                                                                    | translate
+                                                            }}
+                                                        </button>
+                                                    </ng-template>
+                                                </div>
+                                            </div>
+                                            <div
+                                                    class="input-group custom-dt-picker">
+                                                <input #dpFromDate
+                                                       class="form-control"
+                                                       placeholder="yyyy-mm-dd"
+                                                       name="dpFromDate"
+                                                       [value]="formatter.format(fromDate)"
+                                                       id="end_date"
+                                                       (input)="fromDate = validateInput(fromDate, dpFromDate.value)"
+                                                       readonly
+                                                       formControlName="availability_start"/>
+                                                <button
+                                                        class="btn btn-outline-secondary"
+                                                        (click)="datepicker.toggle()"
+                                                        type="button">
+                                                    <i
+                                                            class="ri-calendar-2-line"></i>
+                                                </button>
+                                            </div>
+                                            <div class="invalid-feedback"
+                                                 *ngIf="form.controls['availability_start'].touched && form.controls['availability_start'].errors?.['required']">
+                                                {{
+                                                    "coupon_form_validator_date_start_required"
+                                                        | translate
+                                                }}
+                                            </div>
+                                        </app-form-fields>
+                                    </div>
+
+                                    <div class="col">
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [label]="'global_date_to'"
+                                                [for]="'end_date'"
+                                                [required]="true">
+                                            <div
+                                                    class="input-group custom-dt-picker">
+                                                <input #dpToDate
+                                                       class="form-control"
+                                                       placeholder="yyyy-mm-dd"
+                                                       name="dpToDate"
+                                                       [value]="formatter.format(toDate)"
+                                                       (input)="toDate = validateInput(toDate, dpToDate.value)"
+                                                       readonly
+                                                       formControlName="availability_end"/>
+                                                <button
+                                                        class="btn btn-outline-secondary"
+                                                        (click)="datepicker.toggle()"
+                                                        type="button">
+                                                    <i
+                                                            class="ri-calendar-2-line"></i>
+                                                </button>
+                                            </div>
+                                            <div class="invalid-feedback"
+                                                 *ngIf="form.controls['availability_end'].touched && form.controls['availability_end'].errors?.['required']">
+                                                {{
+                                                    "coupon_form_validator_date_end_required"
+                                                        | translate
+                                                }}
+                                            </div>
+                                        </app-form-fields>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [labelClass]="'form-label form-label-title'"
+                                                [label]="'coupons_amount_minimal'"
+                                                [for]="'coupons_amount_minimal'">
+                                            <input class="form-control"
+                                                   id="coupons_amount_minimal"
+                                                   type="text"
+                                                   formControlName="minimum_amount"
+                                                   numbersOnly
+                                                   [allowDecimal]="true"
+
+                                            >
+                                            <div class="invalid-feedback"
+                                                 *ngIf="form.controls['minimum_amount'].touched && form.controls['minimum_amount'].errors?.['required']">
+                                                {{
+                                                    "coupon_form_validator_minimum_amount_required"
+                                                        | translate
+                                                }}
+                                            </div>
+                                        </app-form-fields>
+                                    </div>
+                                    <div class="col">
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [label]="'coupons_tax_included'"
+                                                [for]="'coupons_tax_included'"
+                                                >
+                                            <select2 [data]="tax$ | async"
+                                                     class="custom-select"
+                                                     [multiple]="false"
+                                                     formControlName="tax_included"
+                                                     [value]="prpeareCouponTax"
+                                            >
+                                            </select2>
+                                        </app-form-fields>
+                                    </div>
+                                    <div class="col">
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [label]="'coupons_shipping_included'"
+                                                [for]="'coupons_shipping_included'"
+                                                >
+                                            <select2 [data]="shipping$ | async"
+                                                     class="custom-select"
+                                                     [multiple]="false"
+                                                     formControlName="shipping_included"
+                                                     [value]="prpeareCouponShipping"
+                                            >
+                                            </select2>
+                                        </app-form-fields>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col col-md-6">
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [labelClass]="'form-label form-label-title'"
+                                                [label]="'coupons_available_per_user'"
+                                                [for]="'coupons_available_per_user'"
+                                        >
+                                            <input class="form-control"
+                                                   id="coupons_available_per_user" type="text"
+                                                   formControlName="available_per_user"
+                                                   numbersOnly
+                                            >
+                                            <div class="invalid-feedback"
+                                                 *ngIf="form.controls['available_per_user'].touched && form.controls['available_per_user'].errors?.['required']">
+                                                {{
+                                                    "coupon_form_validator_available_by_user_required"
+                                                        | translate
+                                                }}
+                                            </div>
+                                        </app-form-fields>
+                                    </div>
+                                    <div class="col col-md-6">
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [labelClass]="'form-label form-label-title'"
+                                                [label]="'coupons_quantity_available'"
+                                                [for]="'coupons_quantity_available'"
+                                                [required]="true"
+                                        >
+                                            <input class="form-control"
+                                                   id="coupons_quantity_available" type="text"
+                                                   formControlName="quantity_available"
+                                                   numbersOnly
+                                            >
+                                            <div class="invalid-feedback"
+                                                 *ngIf="form.controls['quantity_available'].touched && form.controls['quantity_available'].errors?.['required']">
+                                                {{
+                                                    "coupon_form_validator_quantity_required"
+                                                        | translate
+                                                }}
+                                            </div>
+                                        </app-form-fields>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="tab_actions" id="tab_actions"
+                        [class.is-invalid]="tabError == 'tab_actions'">
+                        <a ngbNavLink><i class="ri-flashlight-line"></i>{{
+                                'coupons_tab_actions' | translate
+                            }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="tab_actions">
+
+                                <div class="row">
+                                    <div class="col">
+                                        <app-form-fields [labelWidth]="4"
+                                                         [inline]="'horizontal'"
+                                                         [label]="'coupons_form_free'">
+                                            <div
+                                                    class="form-check form-switch ps-0">
+                                                <label class="switch">
+                                                    <input type="checkbox"
+                                                           formControlName="free_shipping">
+                                                    <span
+                                                            class="switch-state"></span>
+                                                </label>
+                                            </div>
+                                        </app-form-fields>
+
+                                        <app-form-fields
+                                                [inline]="'vertical'"
+                                                [labelClass]="'form-label form-label-title'"
+                                                [label]="'coupons_apply_discount'">
+                                            <select2
+                                                    [data]="couponApplyDiscount$ | async"
+                                                    class="custom-select"
+                                                    [placeholder]="'global_selected_option' | translate"
+                                                    [multiple]="false"
+                                                    formControlName="apply_discount"
+                                                    [value]="prepareCouponApplyDiscount">
+                                            </select2>
+                                            <div class="invalid-feedback"
+                                                 *ngIf="form.controls['apply_discount'].touched && form.controls['apply_discount'].errors?.['required']">
+                                                {{
+                                                    "coupon_form_validator_apply_discount_required"
+                                                        | translate
+                                                }}
+                                            </div>
+                                        </app-form-fields>
+
+                                        @if (form.controls.apply_discount.value
+                                        === 1) {
+                                            <app-form-fields
+                                                    [inline]="'vertical'"
+                                                    [label]="'coupons_form_apply_discount'"
+                                                    [for]="'coupons_form_apply_discount'"
+                                                    [required]="true">
+                                                <input class="form-control"
+                                                       type="text"
+                                                       placeholder="{{ 'coupons_form_apply_discount' | translate }}"
+                                                       formControlName="discount"
+                                                       numbersOnly
+                                                       [allowDecimal]="true"
+                                                >
+                                                <div class="invalid-feedback"
+                                                     *ngIf="form.controls['discount'].touched && form.controls['discount'].errors?.['required']">
+                                                    {{
+                                                        "coupon_form_validator_discount_required"
+                                                            | translate
+                                                    }}
+                                                </div>
+                                            </app-form-fields>
+                                        }
+
+                                        @if (form.controls.apply_discount.value
+                                        === 2) {
+
+                                            <app-form-fields
+                                                    [inline]="'vertical'"
+                                                    [label]="'coupons_form_apply_import'"
+                                                    [for]="'coupons_form_apply_import'"
+                                                    [required]="true">
+                                                <input class="form-control"
+                                                       type="text"
+                                                       placeholder="{{ 'coupons_form_apply_import' | translate }}"
+                                                       formControlName="amount"
+                                                       numbersOnly
+                                                       [allowDecimal]="true"
+                                                >
+                                                <div class="invalid-feedback"
+                                                     *ngIf="form.controls['amount'].touched && form.controls['amount'].errors?.['required']">
+                                                    {{
+                                                        "coupon_form_validator_amount_required"
+                                                            | translate
+                                                    }}
+                                                </div>
+                                            </app-form-fields>
+                                            <app-form-fields
+                                                    [inline]="'vertical'"
+                                                    [label]="'coupons_form_tax_included'"
+                                                    [required]="false">
+                                                <div
+                                                        class="form-check form-switch ps-0">
+                                                    <label class="switch">
+                                                        <input type="checkbox"
+                                                               formControlName="amount_tax_included">
+                                                        <span
+                                                                class="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </app-form-fields>
+                                        }
+
+                                        @if (form.controls.apply_discount.value
+                                        === 1 ||
+                                        form.controls.apply_discount.value ===
+                                        2) {
+
+                                            <app-form-fields
+                                                    [inline]="'vertical'"
+                                                    [label]="'coupons_form_apply_discount_to'"
+                                                    [for]="'coupons_form_apply_discount_to'">
+                                                <select2
+                                                        [data]="couponApplyDiscountTo$ | async"
+                                                        class="custom-select"
+                                                        [placeholder]="'coupons_form_apply_discount_to' | translate"
+                                                        [multiple]="false"
+                                                        formControlName="order_or_product"
+                                                        [value]="prepareCouponApplyDiscountTo">
+                                                </select2>
+                                                <div class="invalid-feedback"
+                                                     *ngIf="form.controls['order_or_product'].touched && form.controls['order_or_product'].errors?.['required']">
+                                                    {{
+                                                        "coupon_form_validator_apply_discount_to_required"
+                                                            | translate
+                                                    }}
+                                                </div>
+                                            </app-form-fields>
+
+                                            @if (form.controls.order_or_product.value
+                                            === 2) {
+                                                <app-form-fields
+                                                        [inline]="'vertical'"
+                                                        [label]="'coupons_form_products'"
+                                                        [for]="'coupons_form_products'"
+                                                        [required]="true">
+                                                    <select2
+                                                            class="custom-select customize mr-1"
+                                                            [data]="(productsFiltered)?.length ? (productsFiltered) : []"
+                                                            [placeholder]="'coupons_form_products' | translate"
+                                                            formControlName="fk_product"
+                                                            noResultMessage="{{ 'global_no_data_found' | translate }}"
+                                                            [customSearchEnabled]="true"
+                                                            [multiple]="false"
+                                                            (search)="onSearchProduct($event)"
+                                                            [templates]="templateProductRelatedData">
+                                                        <ng-template
+                                                            #templateProductRelatedData
+                                                            let-other="other">
+                                                            <p
+                                                                    class="mb-0 w-100 text-start">{{ other.name }}
+                                                                <br> <small
+                                                                        class="sub-text">{{ other.reference }}</small>
+                                                            </p>
+                                                        </ng-template>
+                                                        <div class="invalid-feedback"
+                                                             *ngIf="form.controls['fk_product'].touched && form.controls['fk_product'].errors?.['required']">
+                                                            {{
+                                                                "coupon_form_validator_products_required"
+                                                                    | translate
+                                                            }}
+                                                        </div>
+                                                    </select2>
+                                                </app-form-fields>
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xl-9 col-lg-8">
+                <div [ngbNavOutlet]="nav"></div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <app-button [id]="'pack_btn_cancel'" [classExtra]="'btn-secondary'"
+                        [type]="'button'"
+                        [routerLink]="['/coupons']">{{
+                    "global_cancel" | translate
+                }}
+            </app-button>
+            <app-button
+
+                    [id]="'btn_btn_save'">{{
+                    "global_save" | translate
+                }}
+            </app-button>
+        </div>
+
+    </div>
+</form>

@@ -1,0 +1,15 @@
+<ng-template #alertModal let-modal>
+    <div class="modal-body">
+        <i class="ri-alert-line icon-box fs-1"></i>
+        <h5 class="modal-title">{{ 'global_modal_alert' | translate }}</h5>
+        <p>{{ message | translate }} </p>
+        <div class="button-box">
+            <app-button 
+                [class]="'btn-md fw-bold btn btn-secondary'" 
+                [spinner]="false"
+                (click)="modal.dismiss('Ok')">
+                {{ 'global_modal_ok' | translate }}
+            </app-button>
+        </div>
+    </div>
+</ng-template>

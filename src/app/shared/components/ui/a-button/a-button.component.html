@@ -1,0 +1,16 @@
+<a 
+[routerLink]="link" 
+class="align-items-center btn btn-theme"
+[ngClass]="extraClass"
+>
+    @if (icon) {
+        <i 
+        [ngClass]="{
+                   'ri-add-line' : icon === 'add',
+                   'ri-edit-line' : icon === 'edit',
+                   'ri-delete-bin-line' : icon === 'delete',
+                     'ri-upload-cloud-line' : icon === 'upload',
+                   }"
+        ></i>
+    } {{ text | translate }}
+</a>

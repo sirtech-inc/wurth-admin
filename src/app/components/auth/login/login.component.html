@@ -1,0 +1,47 @@
+<section class="log-in-section section-b-space">
+  <div class="container w-100">
+    <div class="row">
+      <div class="col-xl-5 col-lg-6 me-auto">
+        <app-alert></app-alert>
+        <div class="log-in-box">
+          <div class="log-in-title">
+            <h3>{{ 'auth_wellcome' | translate }}</h3>
+            <h4>{{ 'auth_log_in_your_account' | translate }}</h4>
+          </div>
+          <div class="input-box">
+            <form class="row g-4" [formGroup]="form" (ngSubmit)="submit();">
+              <div class="col-12">
+                <div class="form-floating theme-form-floating log-in-form">
+                  <input type="email" class="form-control" id="email" formControlName="email" placeholder="{{ 'global_email_address' | translate }}" />
+                  <label for="email">{{ 'global_email_address' | translate }}</label>
+                  <div *ngIf="form.controls['email'].touched && form.controls['email'].errors?.['required']" class="invalid-feedback">
+                    {{ 'global_email_is_required' | translate }}
+                  </div>
+                  <div *ngIf="form.controls['email'].touched && form.controls['email'].errors?.['email']" class="invalid-feedback">
+                    {{ 'global_email_is_invalid' | translate }}
+                  </div>
+                </div> 
+              </div>
+              <div class="col-12">
+                <div class="form-floating theme-form-floating log-in-form">
+                  <input type="password" class="form-control" id="password" formControlName="password" placeholder="{{ 'global_password' | translate }} " />
+                  <label for="password">{{ 'global_password' | translate }}</label>
+                  <div *ngIf="form.controls['password'].touched && form.controls['password'].errors?.['required']" class="invalid-feedback">
+                    {{ 'global_password_is_required' | translate }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <app-button 
+                [class]="'btn btn-theme w-100 justify-content-center'"
+                 [id]="'login_btn'">
+                  {{ 'auth_log_in' | translate }}
+                </app-button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

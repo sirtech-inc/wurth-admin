@@ -1,0 +1,31 @@
+<ul class="image-select-list cursor-pointer">
+    <li class="choosefile-input" (click)="MediaModal.openModal()">
+        <i class="ri-add-line"></i>
+    </li>
+    <li *ngFor="let img of showImages; let i = index;">
+        <img src="{{ img?.original_url }}" alt="image" class="img-fluid">
+        <a href="javascript:void(0)" class="remove-icon" id="remove-icon{{i}}" (click)="remove(i, 'multiple');"><i class="ri-close-line text-white"></i></a>
+    </li>
+    <li *ngIf="showImage">
+        <img src="{{ showImage?.original_url }}" alt="image" class="img-fluid">
+        <a href="javascript:void(0)" class="remove-icon" (click)="remove(showImage?.code, 'single')"><i class="ri-close-line text-white"></i></a>
+    </li>
+    <li *ngIf="showImageUrl">
+        <img src="{{ showImageUrl }}" alt="image" class="img-fluid">
+        <a href="javascript:void(0)" class="remove-icon" (click)="remove(1, 'single_image_url')"><i class="ri-close-line text-white"></i></a>
+    </li>
+</ul>
+<p class="help-text" *ngIf="helpText">
+    @if (helpTextLang) {
+        {{ helpText | translate}}
+    }@else {
+        {{ helpText }}
+    }
+</p>
+<app-media-modal 
+    [multipleSelected]="multipleImage"
+    [url]="url"
+    (uploadImages)="selectImages($event)"
+    [maxFileUpload]="maxUpload"
+    #mediaModal>
+</app-media-modal>

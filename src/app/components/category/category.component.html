@@ -1,0 +1,23 @@
+<div class="row m-0">
+    <div class="col-xl-5 p-0">
+        <app-page-wrapper [gridClass]="'col-sm-12'" [title]="'categories'">
+            <div button>
+                <app-a-button [text]="'global_new'" [icon]="'add'"
+                              [link]="'/category'"></app-a-button>
+            </div>
+            <app-tree
+                    [ecommerce]="ecommerce$ | async"
+                    [data]="(category$ | async)?.datos"
+                    [recursionKey]="'subcategories'"
+                    [type]="type"
+                    [categoryType]="categoryType">
+            </app-tree>
+        </app-page-wrapper>
+    </div>
+    <div class="col-xl-7 p-0">
+        <app-form-category
+                [categories]="(category$ | async)?.datos"
+                [type]="type">
+        </app-form-category>
+    </div>
+</div>

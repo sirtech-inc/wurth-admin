@@ -1,0 +1,106 @@
+<ng-template #productModal let-modal>
+    <div class="modal-header">
+        <h3 class="mb-2 fw-semibold">{{ 'promotions_modal_title' | translate }}</h3>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="form" (ngSubmit)="onAdd()">
+
+            <div class="row">
+                <div class="col">
+                    <app-form-fields *ngIf="_id"
+                                    [inline]="'vertical'"
+                                    [label]="'promotions_modal_product'">
+                        <input type="text"
+                            class="form-control"
+                            formControlName="name"
+                            readonly /> <!-- 👈 Solo lectura -->
+                    </app-form-fields>
+
+                    <!-- Caso CREAR (cuando no hay id) -->
+                    <app-form-fields *ngIf="!_id"
+                                    [inline]="'vertical'"
+                                    [label]="'promotions_modal_product'"
+                                    [required]="true">
+                        <select2 class="custom-select customize mr-1"
+                                [data]="(productsFiltered)?.length ? (productsFiltered) : []"
+                                [placeholder]="'products_selected' | translate"
+                                formControlName="code"
+                                noResultMessage="{{ 'global_no_data_found' | translate }}"
+                                [customSearchEnabled]="true"
+                                [multiple]="false"
+                                (search)="onSearchProduct($event)"
+                                [templates]="templateProductRelatedData"
+                                (update)="onSelectProduct($event)">
+                            <ng-template #templateProductRelatedData let-other="other">
+                                <p class="mb-0 w-100 text-start">{{ other.name }} <br>
+                                    <small class="sub-text">{{ other.reference }}</small>
+                                </p>
+                            </ng-template>
+                        </select2>
+                    </app-form-fields>
+
+                </div>
+            </div>
+
+            <div class="row">
+                @if (type !== 'lleva-gratis') {
+                    <div class="col">
+                        <app-form-fields [inline]="'vertical'" [label]="'promotions_modal_quantity_min'"
+                                         [required]="true">
+                            <input type="text" class="form-control" formControlName="quantity_min"
+                                   numbersOnly
+                            />
+                        </app-form-fields>
+                    </div>
+
+                    @if (type === 'escala') {
+                        <div class="col">
+                            <app-form-fields [inline]="'vertical'" [label]="'promotions_modal_quantity_max'"
+                                             [required]="true">
+                                <input type="text" class="form-control" formControlName="quantity_max"
+                                       numbersOnly
+                                />
+                            </app-form-fields>
+                        </div>
+                    }
+                } @else {
+                    @if (condition === 2) {
+                        <div class="col">
+                            <app-form-fields [inline]="'vertical'" [label]="'global_quantity'" [required]="true">
+                                <input type="text" class="form-control" formControlName="quantity"
+                                       numbersOnly
+                                />
+                            </app-form-fields>
+                        </div>
+                    }
+                }
+
+            </div>
+            @if (type === 'escala' || type === 'precio-final' || (type === 'lleva-gratis' && condition === 2)) {
+                <div class="row">
+                    <app-form-fields [inline]="'vertical'" [label]="'promotions_modal_discount'" [required]="true">
+                        <input type="text" class="form-control" formControlName="discount"
+                               numbersOnly
+                               [allowDecimal]="true"
+                        />
+                    </app-form-fields>
+                </div>
+            }
+
+            <!-- Boton guardar -->
+            <div class="d-flex mt-4 justify-content-end gap-2">
+                <app-button [type]="'button'" (click)="onCloseModal()"
+                            [class]="'btn btn-secondary'">{{ 'global_cancel' | translate }}
+                </app-button>
+                <app-button [disabled]="!form.valid" [class]="'btn btn-theme'" > {{
+                        'global_modal_ok' |
+                            translate
+                    }}
+                </app-button>
+            </div>
+
+        </form>
+
+    </div>
+</ng-template>

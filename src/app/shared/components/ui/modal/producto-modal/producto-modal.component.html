@@ -1,0 +1,48 @@
+<ng-template #productoModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Listado de Productos</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <p-table
+      [value]="products"
+      [(selection)]="selectedProducts"
+      dataKey="code"
+      [paginator]="true"
+      [rows]="10"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="loadProducts({ page: $event.first / $event.rows + 1, size: $event.rows })"
+      [loading]="loading"
+      [rowsPerPageOptions]="[10,20,50]"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Referencia</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="product"></p-tableCheckbox>
+          </td>
+          <td>{{ product.code }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.reference }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="agregarSeleccionados()">Agregar seleccionados</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Cerrar</button>
+  </div>
+</ng-template>

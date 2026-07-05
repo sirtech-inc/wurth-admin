@@ -1,0 +1,14 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'users'">
+    <div class="d-flex flex-wrap gap-2" button>
+        <app-a-button [text]="'global_new'" [icon]="'add'" [link]="'/user/create'" ></app-a-button>
+    </div>
+    <app-table 
+        [tableConfig]="tableConfig"
+        [hasCheckbox]="false"
+        (tableChanged)="onTableChange($event)"
+        [topbar]="false"
+        (action)="onActionClicked($event)"
+        >
+    </app-table>
+</app-page-wrapper>
+

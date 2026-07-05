@@ -1,0 +1,1 @@
+export const imageExtensions = ['jpg','png','jpeg','svg','ico']

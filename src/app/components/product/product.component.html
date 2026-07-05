@@ -1,0 +1,37 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'products'">
+    <div button>
+        <app-a-button [text]="'global_new'" [icon]="'add'" [link]="'/products/create'"></app-a-button>
+    </div>
+
+    <div class="filters row mb-3">
+        <div class="col-md-4">
+            <label for="codeFilter">Código</label>
+            <input id="codeFilter" type="text" class="form-control" placeholder="Buscar por código"
+                [(ngModel)]="filters.code" autocomplete="off" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="nameFilter">Nombre</label>
+            <input id="nameFilter" type="text" class="form-control" placeholder="Buscar por nombre"
+                [(ngModel)]="filters.name" autocomplete="off" />
+        </div>
+
+    </div>
+    <div class="filters row mb-3">
+        <div class="col-md-6">
+            <label for="ecommerceFilter">Tienda</label>
+            <app-advanced-dropdown [position]="'bottom'"
+                [options]=" (ecommerce$ | async)?.length ? (ecommerce$ | async) : []"
+                (selectedItem)="onSelectEcommerceItem($event)" [selectedOption]="selectedEcommerce">
+            </app-advanced-dropdown>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-primary w-100" (click)="applyFilters()">Filtrar</button>
+        </div>
+    </div>
+
+    <app-table [tableConfig]="tableConfig" [hasCheckbox]="false" [topbar]="false" (tableChanged)="onTableChange($event)"
+        (action)="onActionClicked($event)">
+    </app-table>
+</app-page-wrapper>

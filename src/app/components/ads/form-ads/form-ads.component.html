@@ -1,0 +1,148 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form"  (ngSubmit)="onSave()">
+    
+    <app-form-fields [inline]="'horizontal'" [labelWidth]="4" [label]="'users_ecommerce'" [required]="true">
+        <app-advanced-dropdown 
+            [position]="'bottom'"
+            [options]=" (ecommerce$ | async)?.length ? (ecommerce$ | async) : []" 
+            (selectedItem)="onSelectEcommerceItem($event)"
+            [selectedOption]="selectedEcommerce"
+            >
+        </app-advanced-dropdown>
+
+        <div class="invalid-feedback"
+          *ngIf="form.controls['ecommerce'].touched && form.controls['ecommerce'].errors?.['required']">
+          {{ "users_required_ecommerce" | translate }}
+        </div>
+
+    </app-form-fields>
+      
+    <app-form-fields 
+        [labelWidth]="4"
+        [inline]="'horizontal'" 
+        [label]="'ads_name'" 
+        [for]="'name_ads'" 
+        [required]="true">
+        <input class="form-control" 
+        type="text" placeholder="{{ 'ads_enter_name' | translate }}" 
+        name="name_ads"
+        formControlName="name">
+
+        <div class="invalid-feedback"
+          *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']">
+          {{ "ads_required_name" | translate }}
+        </div>
+
+    </app-form-fields>
+
+    <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_type'" [for]="'type'" [required]="true">
+        <select2 
+        class="custom-select" [placeholder]="'global_type' | translate" 
+        [data]="adsType"
+        noResultMessage="{{ 'global_no_data_found' | translate }}" id="type" resettable
+        formControlName="type"
+        >
+        </select2>
+
+        <div class="invalid-feedback"
+          *ngIf="form.controls['type'].touched && form.controls['type'].errors?.['required']">
+          {{ "ads_required_type" | translate }}
+        </div>
+    </app-form-fields>
+
+    @if(form.controls['type'].value){
+    <div class="selection-layout radio-type-sec mb-4">
+        <h4 class="fw-semibold w-100">{{'ads_collection_page_layout' | translate }} </h4>
+        <div class="invalid-feedback"
+          *ngIf="form.controls['fk_code_design'].touched && form.controls['fk_code_design'].errors?.['required']">
+          {{ "ads_required_design" | translate }}
+        </div>
+        <div class="row row-cols-xxl-4 row-cols-xl-3 row-cols-lg-2 row-cols-md-3 row-cols-2 g-4">
+            @if(designs$ | async; as designs){
+                @for(design of designs; track design){
+                    <div>
+                        <div class="selection-box text-center">
+                            <input name="shop-layout" type="radio" [id]="design.code" [value]="design.code"
+                                name="collection_layout" 
+                                formControlName="fk_code_design"
+                                (click)="onSelectedDesign(design)"
+                                />
+                            <label [for]="design.code">
+                                <div>
+                                    <img [src]="design.original_url" class="img-fluid" [alt]="design.name">
+                                </div>
+                                <h4 class="mt-2">{{ design.name }}</h4>
+                            </label>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+    }
+
+
+    @for(position of positions; track position){
+        @if(prepareImage(position)){
+            <app-form-fields 
+            [labelWidth]="4" [inline]="'horizontal'" [label]="'global_image'" 
+            [for]="'images'"
+            [labelChild]="'ads_form_position'"
+            [labelExtraChild]="position"
+            [required]="false">
+                    <app-file-upload 
+                        [findFiles]="false" 
+                        [maxUploads]="1" 
+                        [allowMultiple]="false"
+                        [allowExtensions]="['jpg','png','jpeg']" 
+                        [textInfo]="'global_upload_size_600x600'"
+                        [textInfoLang]="true"
+                        [onDeleteFile]="removeImage"
+                        [attachment]="prepareImage(position)"
+                        (selectedFilesOut)="onSelectFiles($event, position)"
+                        ></app-file-upload>
+            </app-form-fields>
+        }@else{
+            <app-form-fields 
+            [labelWidth]="4" [inline]="'horizontal'" [label]="'global_image'" 
+            [for]="'images'"
+            [labelChild]="'ads_form_position'"
+            [labelExtraChild]="position"
+            [required]="false">
+                    <app-file-upload 
+                        [findFiles]="false" 
+                        [maxUploads]="1" 
+                        [allowMultiple]="false"
+                        [allowExtensions]="['jpg','png','jpeg']" 
+                        [textInfo]="'global_upload_size_600x600'"
+                        [textInfoLang]="true"
+                        (selectedFilesOut)="onSelectFiles($event, position)"
+                        ></app-file-upload>
+            </app-form-fields>
+        }
+    }
+
+    <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_status'" [for]="'status'"
+        [required]="false">
+        <div class="form-check form-switch ps-0">
+            <label class="switch">
+                <input type="checkbox" id="status" formControlName="status">
+                <span class="switch-state"></span>
+            </label>
+        </div>
+    </app-form-fields>
+
+
+    <div class="d-flex justify-content-end gap-2">
+        <app-button [id]="'user_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'"
+          [routerLink]="['/ads']">{{ "global_cancel" | translate
+          }}</app-button>
+        <app-button 
+        [id]="'user_btn_save'">{{
+          "global_save" | translate
+          }}</app-button>
+    </div>
+
+
+
+</form>

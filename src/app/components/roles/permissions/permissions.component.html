@@ -1,0 +1,61 @@
+<div class="row g-sm-4 g-2">
+    <div class="col-xl-12">
+        <div class="row roles-form">
+            @if( selectedPermission$ | async; as permissions ){
+            @for(permission of permissions ; track $index) {
+
+            <div class="col-12">
+                <ul class="px-0">
+                    <li class="w-25">{{ permission.name | titlecase }} </li>
+                    <li>
+                        <div class="form-check form-switch">
+                            <input (click)="permission.create = permission.create === 'active' ? 'inactive' : 'active' "
+                                class="checkbox_animated form-check-input check-it" type="checkbox"
+                                [checked]="permission.create === 'active' ? true : false" 
+                                [value]="'active'">
+                            <label class="form-check-label m-0 form-label" for="{{ permission.fk_module }}_create">
+                                {{ 'global_action_rol_create' | translate }}
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-check form-switch">
+                            <input (click)="permission.edit= permission.edit === 'active' ? 'inactive' : 'active' "
+                                class="checkbox_animated form-check-input check-it"
+                                [checked]="permission.edit === 'active' ? true : false"
+                                type="checkbox" [value]="'active'">
+                            <label class="form-check-label m-0 form-label" for="{{ permission.fk_module }}_edit">
+                                {{ 'global_action_rol_edit' | translate }}
+                            </label>
+                        </div>
+
+                    </li>
+                    <li>
+                        <div class="form-check form-switch">
+                            <input (click)="permission.view= permission.view === 'active' ? 'inactive' : 'active' "
+                                class="checkbox_animated form-check-input check-it"
+                                [checked]="permission.view === 'active' ? true : false"
+                                type="checkbox" [value]="'active'">
+                            <label class="form-check-label m-0 form-label" for="{{ permission.fk_module }}_view">
+                                {{ 'global_action_rol_view' | translate }}
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-check form-switch">
+                            <input (click)="permission.delete= permission.delete === 'active' ? 'inactive' : 'active' "
+                            [checked]="permission.delete === 'active' ? true : false"
+                            class="checkbox_animated form-check-input check-it" type="checkbox" [value]="'active'">
+                            <label class="form-check-label m-0 form-label" for="{{ permission.fk_module }}_delete">
+                                {{ 'global_action_rol_delete' | translate }}
+                            </label>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            }
+            }
+        </div>
+    </div>
+</div>

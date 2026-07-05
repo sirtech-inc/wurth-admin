@@ -1,0 +1,182 @@
+<form class="theme-form theme-form-2 mega-form" (ngSubmit)="onSave()" [formGroup]="form">
+    <div class="vertical-tabs">
+        <div class="row">
+            <div class="col-xl-3 col-lg-4">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-pills" orientation="vertical">
+
+                    <li ngbNavItem="general" id="general" [class.is-invalid]="tabError == 'general'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{ 'users_tab_general' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="general">
+
+                                <app-form-fields [inline]="'horizontal'" [labelWidth]="4" [required]="true"
+                                    [label]="'users_fullname'" [inline]="'horizontal'">
+                                    <input class="form-control" type="text" formControlName="name"
+                                        placeholder="{{'users_enter_full_name' | translate}}">
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']">
+                                        {{ 'users_required_name' | translate }}
+                                    </div>
+                                </app-form-fields>
+                                <app-form-fields [inline]="'horizontal'" [labelWidth]="4" [required]="true"
+                                    [label]="'users_lastname'">
+                                    <input class="form-control" formControlName="lastname" type="text"
+                                        placeholder="{{'users_enter_last_name' | translate}}">
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['lastname'].touched && form.controls['lastname'].errors?.['required']">
+                                        {{ 'users_required_lastname' | translate }}
+                                    </div>
+                                </app-form-fields>
+                                <app-form-fields [inline]="'horizontal'" [labelWidth]="4" [label]="'users_phone'">
+                                    <input class="form-control" type="text" formControlName="phone"
+                                        placeholder="{{'users_enter_phone' | translate}}">
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['phone'].touched && form.controls['phone'].errors?.['pattern']">
+                                        {{ 'users_invalid_phone' | translate }}
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields [inline]="'horizontal'" [labelWidth]="4" [label]="'users_status'"
+                                    [for]="'status'" [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="status" formControlName="status">
+                                            <span class="switch-state"></span>
+                                        </label>
+                                    </div>
+                                </app-form-fields>
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="access" id="access" [class.is-invalid]="tabError === 'access'">
+                        <a ngbNavLink><i class="ri-key-line"></i>{{ 'users_tab_accesss' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="access">
+
+                                <app-form-fields [inline]="'horizontal'" [labelWidth]="4" [required]="true"
+                                    [label]="'users_email'">
+                                    <input class="form-control" formControlName="email" type="text"
+                                        placeholder="{{'users_enter_email' | translate}}">
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['email'].touched && form.controls['email'].errors?.['required']"
+                                        autocomplete="false">
+                                        {{ 'users_required_email' | translate }}
+                                    </div>
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['email'].touched && form.controls['email'].errors?.['email']">
+                                        {{ 'users_invalid_email' | translate }}
+                                    </div>
+                                </app-form-fields>
+                                <!-- Password -->
+                                <app-form-fields *ngIf="!(type === 'edit' && id)" [inline]="'horizontal'" [labelWidth]="4"
+                                    [required]="true" [label]="'users_password'">
+                                    <input class="form-control position-relative" formControlName="password"
+                                        type="password" placeholder="{{'users_enter_password' | translate}}">
+
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['password'].touched && form.controls['password'].errors?.['required']"
+                                        autocomplete="false">
+                                        {{ 'users_required_password' | translate }}
+                                    </div>
+
+                                    <app-password-strength
+                                        [PasswordValidatorRequired]="{minLenght:true, uppercase:true, lowercase:true, numeric:true, specialCharacter:true}"
+                                        class="position-absolute" style="z-index: 9999;"
+                                        [Password]="form.controls['password'].value"></app-password-strength>
+                                </app-form-fields>
+
+                                <!-- Confirm Password -->
+                                <app-form-fields *ngIf="!(type === 'edit' && id)" [inline]="'horizontal'" [labelWidth]="4"
+                                    [required]="true" [label]="'users_confirm_password'">
+                                    <input class="form-control position-relative" type="password"
+                                        placeholder="{{'users_enter_confirm_password' | translate}}"
+                                        formControlName="password_confirmation">
+
+                                    <app-password-strength
+                                        [PasswordValidatorRequired]="{minLenght:true, uppercase:true, lowercase:true, numeric:true, specialCharacter:true}"
+                                        class="position-absolute" style="z-index: 9999;"
+                                        [Password]="form.controls['password_confirmation'].value"></app-password-strength>
+
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['password_confirmation'].touched && form.controls['password_confirmation'].errors?.['required']; else error"
+                                        autocomplete="false">
+                                        {{ 'users_required_confirm_password' | translate }}
+                                    </div>
+                                    <ng-template #error>
+                                        <div class="invalid-feedback" *ngIf="passwordMatchError">
+                                            {{ 'users_matched_not_password' | translate }}
+                                        </div>
+                                    </ng-template>
+                                </app-form-fields>
+
+                                <app-form-fields [inline]="'horizontal'" [labelWidth]="4" [label]="'users_role'"
+                                    [required]="true">
+                                    <select2 formControlName="fk_role" class="custom-select"
+                                        [data]="(roles$ | async )?.length ? (roles$ | async ) : []"
+                                        [placeholder]="'users_selected_role' | translate"
+                                        noResultMessage="{{'global_no_data_found' | translate }}">
+                                    </select2>
+
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['fk_role'].touched && form.controls['fk_role'].errors?.['required']">
+                                        {{ 'users_required_role' | translate }}
+                                    </div>
+
+                                </app-form-fields>
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="store" id="store" [class.is-invalid]="tabError === 'store'">
+                        <a ngbNavLink><i class="ri-store-line"></i>{{ 'user_tab_store' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="store">
+
+                                <app-form-fields [inline]="'horizontal'" [labelWidth]="4" [label]="'users_ecommerce'"
+                                    [required]="true">
+                                    <app-advanced-dropdown 
+                                        [position]="'bottom'" 
+                                        [selectedOption]="selectedEcommerce"
+                                        [options]="(ecommerce$ | async )?.length ? (ecommerce$ | async ) : []"
+                                        (selectedItem)="selectRoleItem($event)">
+                                    </app-advanced-dropdown>
+
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['ecommerce'].touched && form.controls['ecommerce'].errors?.['required']">
+                                        {{ 'users_required_ecommerce' | translate }}
+                                    </div>
+
+                                </app-form-fields>
+
+
+
+                            </div>
+                        </ng-template>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-xl-7 col-lg-8">
+                <div [ngbNavOutlet]="nav"></div>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <app-button [id]="'user_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'" [routerLink]="['/user']" >{{ 'global_cancel' | translate }}</app-button>
+            <app-button [id]="'user_btn_save'">{{ 'global_save' | translate }}</app-button>
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+</form>

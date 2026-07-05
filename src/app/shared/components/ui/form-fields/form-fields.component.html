@@ -1,0 +1,21 @@
+<div [class]="class">
+  @if(label){
+  <label #labelElement [attr.for]="for" [class]="labelClass">
+    {{ label | translate }} <span class="theme-color ms-2 required-dot" *ngIf="required">*</span>
+    @if (labelChild) {
+      <small class="d-block fw-lighter">{{ labelChild | translate }}</small>
+    }
+    @if(labelExtraChild){
+      <small class="d-block fw-lighter">{{ labelExtraChild | translate }}</small>
+    }
+  </label>
+  }@else{
+    <label #labelElement class="d-none"></label>
+  }
+  <div [class]="gridClass" #inputElement>
+        <ng-content></ng-content>
+        @if(belowText){
+            <small class="d-block fw-lighter mt-1 fs-12">{{ belowText | translate }}</small>
+        }
+  </div>
+</div>

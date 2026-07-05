@@ -1,0 +1,36 @@
+<ng-template #mediaFilesModal let-modal>
+    <div class="modal-body">
+        <!-- <h5 class="modal-title">{{ 'ui_media_files_title' | translate }}</h5> -->
+        <!-- Poner un buscador  -->
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="{{ 'global_search_enter' | translate}}"
+            [(ngModel)]="search" (keyup)="onSearch()"
+            >
+        </div>
+        <div>
+            <div class="container text-center">
+                <div class="row row-cols-1 row-cols-md-4 layout-selection-sec g-2">
+                    
+                    @if(listFiltered$ | async; as images){
+                    @for (image of images; track image) {
+                    <div>
+                        <div class="theme-card">
+                            <div class="library-box">
+                                <img [src]="image.original_url" class="img-fluid bg-img bg_size_content">
+                                <p class="name">{{ image.description ?? image.name }}</p>
+                            </div>
+                            <div class="content-sec">
+                                <app-button [size]="'sm'" (click)="onSelectFile(image)"
+                                    [classExtra]="'w-100 btn-secondary'" [ngClass]="'w-100'"
+                                    [id]="'ui-media-files-selected'">{{ 'global_select' | translate }}</app-button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</ng-template>

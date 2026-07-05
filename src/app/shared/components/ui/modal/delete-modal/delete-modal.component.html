@@ -1,0 +1,22 @@
+<ng-template #deleteModal let-modal>
+    <div class="modal-body">
+        <i class="ri-delete-bin-line icon-box"></i>
+        <h5 class="modal-title">{{ 'global_delete_item' | translate }}</h5>
+        <p>{{ 'global_deleted_message' | translate }} </p>
+        <div class="button-box">
+            <app-button 
+                [class]="'btn-md fw-bold btn btn-secondary'" 
+                [spinner]="false"
+                [id]="'delete_no_btn'" 
+                (click)="modal.dismiss('Cancel')">
+                {{ 'global_no' | translate }}
+            </app-button>
+            <app-button 
+                [class]="'btn-theme btn-md fw-bold btn'" 
+                [id]="'delete_yes_btn'"
+                (click)="delete(modal)">
+                {{ 'global_yes' | translate }}
+            </app-button>
+        </div>
+    </div>
+</ng-template>

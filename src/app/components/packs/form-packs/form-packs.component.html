@@ -1,0 +1,161 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="onSave()">
+
+    <app-form-fields [inline]="'horizontal'" [labelWidth]="3" [label]="'users_ecommerce'" [required]="true">
+        <!--<app-advanced-dropdown [position]="'bottom'"
+                               [options]=" (ecommerce$ | async)?.length ? (ecommerce$ | async) : []"
+                               (selectedItem)="onSelectEcommerceItem($event)" 
+                               [selectedOption]="selectedEcommerce">
+        </app-advanced-dropdown>-->
+        <app-advanced-dropdown [position]="'bottom'" [options]="ecommerceOptions"
+            (selectedItem)="onSelectEcommerceItem($event)" [selectedOption]="selectedEcommerce">
+        </app-advanced-dropdown>
+
+        <div class="invalid-feedback"
+            *ngIf="form.controls['ecommerce'].touched && form.controls['ecommerce'].errors?.['required']">
+            {{ "packs_required_ecommerce" | translate }}
+        </div>
+
+    </app-form-fields>
+
+
+    <app-form-fields [inline]="'horizontal'" [labelWidth]="3" [label]="'packs_name' | translate" [for]="'name'"
+        [required]="true">
+        <input class="form-control" type="text" placeholder="{{ 'packs_enter_name' | translate }}" name="name"
+            formControlName="name">
+
+        <div class="invalid-feedback"
+            *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']">
+            {{ "packs_required_name" | translate }}
+        </div>
+
+    </app-form-fields>
+
+    <app-form-fields [inline]="'horizontal'" [labelWidth]="3" [label]="'packs_reference' | translate" [for]="'reference'"
+        [required]="true">
+        <input class="form-control" type="text" placeholder="{{ 'packs_enter_reference' | translate }}" name="reference"
+            formControlName="reference">
+
+        <div class="invalid-feedback"
+            *ngIf="form.controls['reference'].touched && form.controls['reference'].errors?.['required']">
+            {{ "packs_required_reference" | translate }}
+        </div>
+
+    </app-form-fields>
+
+    <app-form-fields [labelWidth]="3" [inline]="'horizontal'" [label]="'packs_amount' | translate " [for]="'price'"
+        [required]="true">
+        <input class="form-control" type="text" placeholder="{{ 'packs_enter_amount' | translate }}" name="price"
+            formControlName="price" numbersOnly [allowDecimal]="true">
+
+        <div class="invalid-feedback"
+            *ngIf="form.controls['price'].touched && form.controls['price'].errors?.['required']">
+            {{ "packs_required_amount" | translate }}
+        </div>
+
+        <div class="invalid-feedback"
+            *ngIf="form.controls['price'].touched && form.controls['price'].errors?.['invalidAmount']">
+            {{ "packs_invalid_amount" | translate }}
+        </div>
+
+
+    </app-form-fields>
+
+    <app-form-fields [labelWidth]="3" [inline]="'horizontal'" [label]="'packs_stock' | translate " [for]="'stock'"
+        [required]="true">
+        <input class="form-control" type="text" placeholder="{{ 'packs_enter_stock' | translate }}" name="stock"
+            formControlName="stock" numbersOnly [allowDecimal]="true">
+
+        <div class="invalid-feedback"
+            *ngIf="form.controls['stock'].touched && form.controls['stock'].errors?.['required']">
+            {{ "packs_required_stock" | translate }}
+        </div>
+
+        <div class="invalid-feedback"
+            *ngIf="form.controls['stock'].touched && form.controls['stock'].errors?.['invalidNumber']">
+            {{ "packs_required_stock" | translate }}
+        </div>
+
+
+    </app-form-fields>
+
+
+    <app-form-fields [labelWidth]="3" [inline]="'horizontal'" [label]="'packs_products' | translate" [for]="'product'">
+
+        <div class="row mb-2">
+            <div class="col-6">
+                <select2 class="custom-select customize mr-1"
+                    [data]="(productsFiltered)?.length ? (productsFiltered) : []"
+                    [placeholder]="'products_selected' | translate" formControlName="fk_product"
+                    noResultMessage="{{ 'global_no_data_found' | translate }}" [customSearchEnabled]="true"
+                    [multiple]="false" (search)="onSearchProduct($event)" [templates]="templateProductRelatedData"
+                    (update)="onSelectProduct($event)">
+                    <ng-template #templateProductRelatedData let-other="other">
+                        <p class="mb-0 w-100 text-start">{{ other.name }} <br> <small class="sub-text">{{
+                                other.reference }}</small></p>
+                    </ng-template>
+                </select2>
+            </div>
+            <div class="col-4">
+                <input class="form-control" type="text" [formControl]="tableQuantity"
+                    [placeholder]="'packs_form_table_quantity' | translate" numbersOnly>
+            </div>
+            <div class="col-2">
+                <app-button [disabled]="!checkPrepareItem()" [id]="'btn_add_product'" [classExtra]="'btn-primary'"
+                    [type]="'button'" (click)="onAddProduct()"><i class="ri-add-line"></i></app-button>
+            </div>
+        </div>
+
+        <app-table [tableConfig]="tableConfig" [hasCheckbox]="false" [topbar]="false" [pagination]="false"
+            (action)="onActionClicked($event)">
+        </app-table>
+
+        <div class="invalid-feedback"
+            *ngIf="form.controls['product'].touched && form.controls['product'].value.length === 0">
+            {{ "packs_invalid_items" | translate }}
+        </div>
+
+    </app-form-fields>
+
+
+    @if (prepareImages()) {
+    <app-form-fields [inline]="'horizontal'" [labelWidth]="3" [label]="'global_images' | translate" [for]="'icon'" [required]="true">
+        <app-file-upload [findFiles]="true" [maxUploads]="4" [allowMultiple]="true"
+            [allowExtensions]="['jpg','png','jpeg']" [textInfo]="'global_upload_size_600x600'" [findFiles]="true"
+            (selectedFilesOut)="onSelectFile($event)" (filesRegistered)="onFilesRegistered($event)"
+            [attachments]="prepareImages()" [textInfoLang]="true" [module]="'packs'"></app-file-upload>
+    </app-form-fields>
+    } @else {
+    <app-form-fields [inline]="'horizontal'" [labelWidth]="3" [label]="'global_images' | translate" [for]="'icon'" [required]="true">
+        <app-file-upload [findFiles]="true" [maxUploads]="4" [allowMultiple]="true"
+            [allowExtensions]="['jpg','png','jpeg']" [textInfo]="'global_upload_size_600x600'" [findFiles]="true"
+            (selectedFilesOut)="onSelectFile($event)" (filesRegistered)="onFilesRegistered($event)"
+            [textInfoLang]="true" [module]="'packs'"></app-file-upload>
+    </app-form-fields>
+
+    }
+
+
+
+    <app-form-fields [labelWidth]="3" [inline]="'horizontal'" [label]="'global_status' | translate" [for]="'status'"
+        [required]="false">
+        <div class="form-check form-switch ps-0">
+            <label class="switch">
+                <input type="checkbox" id="status" formControlName="status">
+                <span class="switch-state"></span>
+            </label>
+        </div>
+    </app-form-fields>
+
+    <div class="d-flex justify-content-end gap-2">
+        <app-button [id]="'pack_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'"
+            [routerLink]="['/packs']">{{
+            "global_cancel" | translate
+            }}
+        </app-button>
+        <app-button [id]="'btn_btn_save'">{{
+            "global_save" | translate
+            }}
+        </app-button>
+    </div>
+
+</form>

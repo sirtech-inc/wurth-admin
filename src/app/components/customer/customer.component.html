@@ -1,0 +1,16 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'customers'">
+    <div button >
+        <!-- <a [routerLink]="['/customers/create']" class="align-items-center btn btn-theme d-flex">
+            <i class="ri-add-line"></i> {{ 'customers_create' | translate }}
+        </a> -->
+        <app-a-button [text]="'customers_create'" [icon]="'add'" [link]="'/customers/create'" ></app-a-button>
+    </div>
+    <app-table 
+        [tableConfig]="tableConfig"
+        [hasCheckbox]="false"
+        (tableChanged)="onTableChange($event)"
+        [topbar]="false"
+        (action)="onActionClicked($event)"
+        >
+    </app-table>
+</app-page-wrapper>

@@ -1,0 +1,204 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="vertical-tabs">
+
+        <div class="row">
+            <div class="col-xl-3 col-lg-4">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-pills" orientation="vertical">
+                    <li ngbNavItem="general" id="general" [class.is-invalid]="tabError == 'general'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{ 'customers_general' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="general">
+                                <div *ngIf="type !== 'edit'">
+                                    <app-form-fields [inline]="'horizontal'"
+                                        [labelClass]="'form-label-title col-sm-3 mb-0'" [label]="'products_ecommerce'"
+                                        [required]="true">
+
+                                        <select2 class="custom-select" [data]="(ecommerce$ | async )"
+                                            [placeholder]="'products_ecommerce_selected' | translate" [multiple]="false"
+                                            resettable (update)="onEcommerceChange($event)">
+                                        </select2>
+
+
+                                    </app-form-fields>
+                                </div>
+                                <div *ngIf="type === 'edit'">
+                                    <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                        [gridClass]="'col-sm-9'" [label]="'products_ecommerce'" [for]="'ecommerce'">
+                                        <input class="form-control" id="ecommerce" type="text"
+                                            placeholder="{{ 'customers_enter_email' | translate }}"
+                                            formControlName="ecommerce">
+                                    </app-form-fields>
+                                </div>
+
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'customers_name'" [for]="'name'"
+                                    [required]="true">
+                                    <input class="form-control" id="name" type="text"
+                                        placeholder="{{ 'customers_enter_name' | translate }}" formControlName="name">
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']">
+                                        {{ 'name_is_required' | translate }}
+                                    </div>
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'customers_lastname'" [for]="'lastname'"
+                                    [required]="true">
+                                    <input class="form-control" id="lastname" type="text"
+                                        placeholder="{{ 'customers_enter_lastname' | translate }}"
+                                        formControlName="lastname">
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'customers_email'" [for]="'email'"
+                                    [required]="true">
+                                    <input class="form-control" id="email" type="text"
+                                        placeholder="{{ 'customers_enter_email' | translate }}" formControlName="email">
+                                </app-form-fields>
+                                <div *ngIf="type !== 'edit'">
+                                    <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                        [gridClass]="'col-sm-9'" [label]="'customers_password'" [for]="'password'"
+                                        [required]="true">
+
+                                        <input class="form-control" id="password" type="text"
+                                            placeholder="{{ 'customers_enter_password' | translate }}"
+                                            formControlName="password">
+                                    </app-form-fields>
+                                </div>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'customers_courtesy'" [for]="'deal'"
+                                    [required]="true">
+                                    <select2 class="custom-select" [placeholder]="'global_select_type' | translate"
+                                        [data]="courtesyType?.length ? courtesyType : []" id="deal"
+                                        formControlName="deal">
+                                    </select2>
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'global_type'" [for]="'type'" [required]="true">
+                                    <select2 class="custom-select" [placeholder]="'global_select_type' | translate"
+                                        [data]="personType?.length ? personType : []" id="type" formControlName="type">
+                                    </select2>
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'company_name'" [for]="'company_name'"
+                                    [required]="true" *ngIf="form.get('type').value === 'company'">
+                                    <input class="form-control" id="company_name" type="text"
+                                        placeholder="{{ 'customers_enter_company_rrss' | translate }}"
+                                        formControlName="company_name">
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'customers_nro_doc'" [for]="'document_number'"
+                                    [required]="true">
+                                    <input class="form-control" id="document_number" type="text"
+                                        placeholder="{{ 'customers_enter_nro_doc' | translate }}"
+                                        formControlName="document_number">
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'global_status'" [for]="'status'"
+                                    [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="status" formControlName="status">
+                                            <span class="switch-state"></span>
+                                        </label>
+                                    </div>
+                                </app-form-fields>
+
+                                <!-- <app-button [id]="'product_btn'">{{ 'global_save' | translate }}</app-button> -->
+
+                            </div>
+                        </ng-template>
+                    </li>
+                    <!-- <li *ngIf="type === 'edit' " ngbNavItem="address" id="address"
+                        [class.is-invalid]="tabError == 'address'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{ 'customers_address' | translate }}</a>
+                        <ng-template ngbNavContent>
+
+                            <div class="tab" tab="address">
+
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'customers_alias_address'" [for]="'alias_address'"
+                                    [required]="true">
+                                    <input class="form-control" id="alias_address" type="text"
+                                        placeholder="{{ 'customers_enter_alias_address' | translate }}">
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'customers_address_text'" [for]="'address'" [required]="true">
+                                    <textarea class="form-control" id="address"
+                                        placeholder="{{ 'customers_enter_address_text' | translate }}"></textarea>
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'customers_reference'" [for]="'reference'" [required]="true">
+                                    <textarea class="form-control" id="reference"
+                                        placeholder="{{ 'customers_enter_reference' | translate }}"></textarea>
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'"
+                                    [gridClass]="'col-sm-9'" [label]="'global_phone'" [for]="'phone'"
+                                    [required]="true">
+                                    <input class="form-control" id="phone" type="text"
+                                        placeholder="{{ 'global_enter_phone' | translate }}">
+                                </app-form-fields>
+
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'" [gridClass]="'col-sm-9'" [label]="'global_department'" [for]="'department'" [required]="true">
+                                    <select2
+                                        [data]="[]"
+                                        class="custom-select"
+                                        [placeholder]="'global_department_selected' | translate"
+                                        noResultMessage="{{ 'global_no_data_found' | translate }}"
+                                        id="department"
+                                        resettable>
+                                    </select2>
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'" [gridClass]="'col-sm-9'" [label]="'global_province'" [for]="'province'" [required]="true">
+                                    <select2
+                                        [data]="[]"
+                                        class="custom-select"
+                                        [placeholder]="'global_province_selected' | translate"
+                                        noResultMessage="{{ 'global_no_data_found' | translate }}"
+                                        id="province"
+                                        resettable>
+                                    </select2>
+                                </app-form-fields>
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'" [gridClass]="'col-sm-9'" [label]="'global_district'" [for]="'district'" [required]="true">
+                                    <select2
+                                        [data]="[]"
+                                        class="custom-select"
+                                        [placeholder]="'global_district_selected' | translate"
+                                        noResultMessage="{{ 'global_no_data_found' | translate }}"
+                                        id="district"
+                                        resettable>
+                                    </select2>
+                                </app-form-fields>
+
+                                <app-form-fields [labelClass]="'form-label-title col-sm-3 mb-0'" [gridClass]="'col-sm-9'" [label]="'global_status'" [for]="'status'" [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="status"  >
+                                            <span class="switch-state"></span>
+                                        </label>
+                                    </div>
+                                </app-form-fields>
+
+                                <app-button [id]="'product_btn'">
+                                    {{ 'customers_save_address' | translate }}
+                                </app-button>
+                                <app-table [pagination]="false" [tableConfig]="tableConfig" [hasCheckbox]="false" [hasDuplicate]="false">
+                                </app-table>
+                            </div>
+                        </ng-template>
+                    </li> -->
+                </ul>
+            </div>
+
+            <div class="col-xl-9 col-lg-8">
+                <div [ngbNavOutlet]="nav"></div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="d-flex justify-content-end gap-2">
+        <app-button [id]="'product_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'"
+            [routerLink]="['/customers']">{{ 'global_cancel' | translate }}</app-button>
+        <app-button [id]="'product_btn_save'">{{ 'global_save' | translate }}</app-button>
+    </div>
+</form>

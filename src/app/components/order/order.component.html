@@ -1,0 +1,31 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'orders'">
+    <div class="filters row mb-3">
+        <div class="col-md-4">
+            <label for="orderNumberFilter">{{ 'orders_number' | translate }}</label>
+            <input
+                id="orderNumberFilter"
+                type="text"
+                class="form-control"
+                [placeholder]="'orders_number' | translate"
+                [(ngModel)]="filters.orderNumber"
+                autocomplete="off"
+            />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-primary w-100" (click)="applyFilters()">Filtrar</button>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-secondary w-100" (click)="clearFilters()">Limpiar</button>
+        </div>
+    </div>
+    <app-table 
+        [tableConfig]="tableConfig"
+        [dateRange]="false"
+        [topbar]="false"
+        (tableChanged)="onTableChange($event)"
+        (action)="onActionClicked($event)"
+        >
+    </app-table>
+ </app-page-wrapper>
+ 
+ 

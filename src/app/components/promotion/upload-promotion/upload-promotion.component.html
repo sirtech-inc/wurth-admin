@@ -1,0 +1,45 @@
+<ng-template #uploadPromotionModal let-modal>
+    <div class="modal-header">
+        <h3 class="mb-2 fw-semibold">{{ 'promotions_upload' | translate }}</h3>
+    </div>
+    <div class="modal-body">
+
+        <app-form-fields [labelWidth]="2" [inline]="'horizontal'" [label]="'promotions_upload_scale'" [for]="'images'"
+                         [required]="false">
+            <app-file-upload [maxUploads]="1" [allowExtensions]="['xls', 'xlsx']" [allowMultiple]="true"
+                             (selectedFilesOut)="onSelectedScale($event)"
+                             [showLoader]="importingScale$ | async"
+            >
+            </app-file-upload>
+        </app-form-fields>
+
+        <app-form-fields [labelWidth]="2" [inline]="'horizontal'" [label]="'promotions_upload_final_price'"
+                         [for]="'images'" [required]="false">
+            <app-file-upload [maxUploads]="1" [allowExtensions]="['xls', 'xlsx']" [allowMultiple]="true"
+                             (selectedFilesOut)="onSelectedFinalPrice($event)"
+                             [showLoader]="importingFinalPrice$ | async"
+            ></app-file-upload>
+        </app-form-fields>
+
+        <app-form-fields [labelWidth]="2" [inline]="'horizontal'" [label]="'promotions_upload_get_free'"
+                         [for]="'images'" [required]="false">
+            <app-file-upload [maxUploads]="1" [allowExtensions]="['xls', 'xlsx']" [allowMultiple]="true"
+                             (selectedFilesOut)="onSelectedGiftOneItem($event)"
+                             [showLoader]="(importingBonusGiftQuantity$ | async) || (importingBonusGiftAmount$ | async)"
+            ></app-file-upload>
+        </app-form-fields>
+
+
+        <div class="d-flex mt-4 justify-content-end gap-2">
+            <app-button [type]="'button'" (click)="onCloseModal()"
+                        [class]="'btn btn-secondary'">{{ 'global_cancel' | translate }}
+            </app-button>
+            <app-button
+                    [type]="'button'"
+                    [disabled]="!fileFinalPrice && !fileGiftOneItem && !fileScale"
+                    (click)="onImportFiles()"
+                    [class]="'btn btn-theme'" [icon]="'process'"> {{ 'global_process' | translate }}
+            </app-button>
+        </div>
+    </div>
+</ng-template>

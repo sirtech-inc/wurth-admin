@@ -1,0 +1,53 @@
+<section class="dashboard-tiles">
+        <div class="container-fluid">
+
+            <div class="row g-3">
+                <div class="col-xl-4 col-sm-6">
+                    <div class="card-tiles">
+                        <div>
+                            <h6>{{ 'dashabord_total_revenue' | translate }}</h6>
+                            <h3>{{ dashboard?.total_sales | currencySymbol }}</h3>
+                        </div>
+                        <div class="icon-box">
+                            <i class="ri-wallet-line"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6">
+                    <div class="card-tiles">
+                        <div>
+                            <h6>{{ 'dashabord_total_orders' | translate }}</h6>
+                            <h3>{{ dashboard?.total_orders }}</h3>
+                        </div>
+                        <div class="icon-box">
+                            <i class="ri-file-text-line"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6">
+                    <div class="card-tiles">
+                        <div>
+                            <h6>{{ 'dashabord_total_new_users' | translate }}</h6>
+                            <h3>{{ dashboard?.total_new_users }}</h3>
+                        </div>
+                        <div class="icon-box">
+                            <i class="ri-box-3-line"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+</section>
+
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'Ultimos Pedidos'">
+     <app-table 
+        [tableConfig]="orderTableConfig"
+        [hasCheckbox]="false"
+        [hasDuplicate]="false"
+        [topbar]="false"
+        [pagination]="false"
+        (tableChanged)="onTableChange($event)"
+        >
+    </app-table>
+</app-page-wrapper>

@@ -1,0 +1,27 @@
+<button 
+[class]="class" 
+[ngClass]="classExtra"
+[id]="id" [type]="type"
+        [class.disabled]="disabled || ((spinnerStatus$ | async) && spinner && buttonId == id)"
+        [disabled]="disabled || ((spinnerStatus$ | async) && buttonId == id)"
+        (click)="onClick(id)">
+    <div [ngClass]="{ 'position-relative spinning' : spinnerManually || (spinner && (spinnerStatus$ | async) && buttonId && buttonId == id) }"
+    class="align-self-center d-flex justify-content-center align-items-center"
+    >
+        @if (icon) {
+            <i 
+            class="me-1"
+            [ngClass]="{
+                       'ri-add-line' : icon === 'add',
+                       'ri-edit-line' : icon === 'edit',
+                       'ri-delete-bin-line' : icon === 'delete',
+                       'ri-upload-cloud-line' : icon === 'upload',
+                       'ri-refresh-line' : icon === 'process',
+                       'ri-save-line' : icon === 'save',
+                       'ri-search-line' : icon === 'search'
+                       }"
+            ></i>
+        } 
+        <ng-content></ng-content>
+    </div>
+</button>

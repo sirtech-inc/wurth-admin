@@ -1,0 +1,62 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'ads'">
+    <div button >
+        <app-a-button [text]="'global_new'" [icon]="'add'" [link]="'/ads/create'" ></app-a-button>
+    </div>
+
+    <div class="filters row mb-3">
+        <div class="col-md-4">
+            <label for="nameFilter">Nombre</label>
+            <input
+                id="nameFilter"
+                type="text"
+                class="form-control"
+                placeholder="Buscar por nombre"
+                [(ngModel)]="filters.name"
+                autocomplete="off"
+            />
+        </div>
+
+        <div class="col-md-4">
+            <label for="typeFilter">Tipo</label>
+            <select2
+                id="typeFilter"
+                class="custom-select"
+                [placeholder]="'global_type' | translate"
+                [data]="adsType"
+                noResultMessage="{{ 'global_no_data_found' | translate }}"
+                [(ngModel)]="filters.type"
+                [ngModelOptions]="{ standalone: true }"
+                resettable>
+            </select2>
+        </div>
+
+        <div class="col-md-4">
+            <label for="ecommerceFilter">Ecommerce</label>
+            <app-advanced-dropdown
+                [position]="'bottom'"
+                [options]="(ecommerce$ | async)?.length ? (ecommerce$ | async) : []"
+                (selectedItem)="onSelectEcommerceItem($event)"
+                [selectedOption]="selectedEcommerce">
+            </app-advanced-dropdown>
+        </div>
+    </div>
+
+    <div class="filters row mb-3">
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-primary w-100" (click)="applyFilters()">Filtrar</button>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-secondary w-100" (click)="clearFilters()">Limpiar</button>
+        </div>
+    </div>
+
+    <app-table 
+        [tableConfig]="tableConfig"
+        [hasCheckbox]="false"
+        [hasDuplicate]="false"
+        [topbar]="false"
+        (tableChanged)="onTableChange($event)"
+        (action)="onActionClicked($event)"
+        >
+    </app-table>
+</app-page-wrapper>

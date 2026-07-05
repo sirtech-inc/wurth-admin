@@ -1,0 +1,22 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'setting.title'">
+    <div class="inside-horizontal-tabs mt-0">
+
+        <div class="flex justify-content-center py-2">
+            <p-selectButton
+                    [options]="ecommerce$ | async"
+                    optionLabel="description"
+                    [(ngModel)]="selectedEcommerce"
+                    optionValue="value"
+                    (onChange)="onChangeEcommerce($event)"
+            />
+        </div>
+
+        <!-- Content Form -->
+        <div class="flex justify-content-start">
+            @if(selectedEcommerce){
+                <app-form-settings [ecommerce]="selectedEcommerce" ></app-form-settings>
+            }
+        </div>
+         
+    </div>
+</app-page-wrapper>

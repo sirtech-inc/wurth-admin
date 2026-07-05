@@ -1,0 +1,456 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="onSave()">
+    <div class="vertical-tabs">
+        <div class="row">
+            <div class="col-xl-4 col-lg-4">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-pills" orientation="vertical">
+
+                    <li ngbNavItem="general" id="general" [class.is-invalid]="tabError == 'general'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{ "products_general"| translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="general">
+
+                                <app-form-fields [inline]="'horizontal'" [labelWidth]="5" [label]="'products_ecommerce'"
+                                    [required]="true">
+
+                                    <select2 class="custom-select" [data]="(ecommerce$ | async )"
+                                        [placeholder]="'products_ecommerce_selected' | translate"
+                                        formControlName="ecommerce" resettable [multiple]="true">
+                                    </select2>
+
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'" [label]="'products_name'"
+                                    [for]="'name'" [required]="true">
+                                    <input class="form-control" id="name" type="text"
+                                        placeholder="{{ 'products_enter_name' | translate }}" formControlName="name" />
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']">
+                                        {{ "products_required_name" | translate }}
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'" [label]="'products_code'"
+                                    [for]="'reference'" [required]="true">
+                                    <input class="form-control" id="reference" type="text"
+                                        placeholder="{{ 'products_enter_code' | translate }}"
+                                        formControlName="reference" />
+
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['reference'].touched && form.controls['reference'].errors?.['required']">
+                                        {{ "products_required_reference" | translate }}
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'"
+                                    [label]="'products_short_description'" [for]="'short_description'">
+                                    <div class="custom-editor">
+                                        <ngx-editor-menu [editor]="editor_short"
+                                            [toolbar]="toolbar_short"></ngx-editor-menu>
+                                        <ngx-editor [editor]="editor_short"
+                                            [placeholder]="'global_type_here' | translate"
+                                            formControlName="short_description"></ngx-editor>
+                                    </div>
+                                </app-form-fields>
+
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'"
+                                    [label]="'products_description'" [for]="'description'">
+                                    <div class="custom-editor">
+                                        <ngx-editor-menu [editor]="editor"></ngx-editor-menu>
+                                        <ngx-editor [editor]="editor" [placeholder]="'global_type_here' | translate"
+                                            formControlName="description"></ngx-editor>
+                                    </div>
+                                </app-form-fields>
+
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="otros" id="otros" [class.is-invalid]="tabError === 'otros'">
+                        <a ngbNavLink><i class="ri-flag-2-line"></i>{{
+                            "products_other" |
+                            translate
+                            }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="other">
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'" [label]="'products_tag'"
+                                    [for]="'tags'" [required]="false">
+                                    <app-advanced-dropdown [selectSingle]="false" [position]="'bottom'"
+                                        [options]="(tags$ | async)" [selectedOption]="selectedTags"
+                                        (selectedItem)="onSelectedTagItem($event)"></app-advanced-dropdown>
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'"
+                                    [label]="'products_categories'" [for]="'categories'" [required]="true">
+                                    <app-advanced-dropdown [selectSingle]="false" [position]="'bottom'"
+                                        [options]="categoriesFilter?.datos" [subArrayKey]="'subcategories'"
+                                        [selectedOption]="selectedCategories"
+                                        (selectedItem)="onSelectCategoryItem($event)">
+                                    </app-advanced-dropdown>
+
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['category'].touched && form.controls['category'].errors?.['required']">
+                                        {{ "products_required_category" | translate }}
+                                    </div>
+
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'" [label]="'products_packaging'"
+                                    [for]="'package'" [required]="true">
+                                    <input class="form-control" id="package" type="text"
+                                        placeholder="{{ 'products_packaging' | translate }}"
+                                        formControlName="package" />
+
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['package'].touched && form.controls['package'].errors?.['required']">
+                                        {{ "products_require_packing" | translate }}
+                                    </div>
+                                    <div class="invalid-feedback"
+                                        *ngIf="form.controls['package'].touched && form.controls['package'].errors?.['invalidPacking']">
+                                        {{ "products_require_packing_invalid" | translate }}
+                                    </div>
+
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'"
+                                    [label]="'products_random_related'" [for]="'related_random'" [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="related_random"
+                                                formControlName="related_random" />
+                                            <span class="switch-state"></span>
+                                        </label>
+                                    </div>
+                                </app-form-fields>
+
+                                @if (!form.controls['related_random']?.value) {
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'" @fade
+                                    [label]="'products_related'" [for]="'related_product'" [required]="false">
+                                    <div class="d-flex flex-column align-items-start gap-2">
+                                        <app-button [size]="'sm'" [icon]="'search'" (click)="opRelated.toggle($event)"
+                                            [classExtra]="'btn-secondary'" [type]="'button'">{{ "global_search_product"
+                                            | translate | uppercase }}
+                                        </app-button>
+                                        @if (selectedRelated && selectedRelated.length > 0) {
+                                        <div class="d-flex align-items-center gap-2 flex-wrap w-100 flex-row">
+                                            @for(related of selectedRelated; track related; let i = $index){
+                                            <p-chip [label]="related?.name" [removable]="true"
+                                                (onRemove)="onRemoveRelated(related, 'related')" />
+                                            }
+                                        </div>
+                                        }
+
+                                    </div>
+                                </app-form-fields>
+                                }
+
+                                <app-form-fields [labelWidth]="5" [inline]="'horizontal'"
+                                    [label]="'products_cross_sell'" [for]="'cross_sell_product'" [required]="false">
+                                    <div class="d-flex flex-column align-items-start gap-2">
+                                        <app-button [size]="'sm'" [icon]="'search'" (click)="opCrossSell.toggle($event)"
+                                            [classExtra]="'btn-secondary'" [type]="'button'">{{ "global_search_product"
+                                            | translate | uppercase }}
+                                        </app-button>
+
+                                        @if (selectedCrossSell && selectedCrossSell.length > 0) {
+                                        <div class="d-flex align-items-center gap-2 flex-wrap w-100 flex-row">
+                                            @for(cross of selectedCrossSell; track cross; let i = $index){
+                                            <p-chip [label]="cross?.name" [removable]="true"
+                                                (onRemove)="onRemoveRelated(cross, 'related')" />
+                                            }
+                                        </div>
+                                        }
+
+                                    </div>
+                                </app-form-fields>
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="images_video" id="images_video" [class.is-invalid]="tabError === 'images_video'">
+                        <a ngbNavLink><i class="ri-folder-image-line"></i>{{
+                            "products_images_video" | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="images_video">
+
+                                @if( prepareImages() ){
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_images'"
+                                    [for]="'images'" [required]="false">
+                                    <app-file-upload [maxUploads]="4" [allowMultiple]="true"
+                                        [allowExtensions]="['jpg','png','jpeg']"
+                                        [textInfo]="'global_upload_size_600x600'" [findFiles]="true"
+                                        (selectedFilesOut)="onSelectFile($event,'image')"
+                                        (filesRegistered)="onFilesRegistered($event,'image')" [textInfoLang]="true"
+                                        [attachments]="prepareImages()" [module]="'product'"></app-file-upload>
+                                </app-form-fields>
+
+                                }@else {
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_images'"
+                                    [for]="'images'" [required]="false">
+                                    <app-file-upload [findFiles]="true" [maxUploads]="4" [allowMultiple]="true"
+                                        [allowExtensions]="['jpg','png','jpeg']"
+                                        [textInfo]="'global_upload_size_600x600'" [findFiles]="true"
+                                        (selectedFilesOut)="onSelectFile($event,'image')"
+                                        (filesRegistered)="onFilesRegistered($event,'image')" [textInfoLang]="true"
+                                        [module]="'product'"></app-file-upload>
+                                </app-form-fields>
+                                }
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                    [label]="'products_youtube_url'" [for]="'url_youtube'" [required]="false">
+                                    <input class="form-control" id="url_youtube" type="text"
+                                        placeholder="{{ 'products_youtube_url' | translate }}"
+                                        formControlName="url_youtube" />
+                                </app-form-fields>
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+
+                    <li ngbNavItem="files_attatchment" id="files_attatchment" [class.is-invalid]="tabError === 'files_attatchment'">
+                        <a ngbNavLink><i class="ri-folder-image-line"></i>{{
+                            "products_files_attatchment" | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="files_attatchment">
+
+                                @if( prepareAttachments() ){
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_files'"
+                                    [for]="'attachment'" [required]="false">
+                                    <app-file-upload [maxUploads]="4" [allowMultiple]="true"
+                                        [allowExtensions]="['pdf']"
+                                        [textInfo]="'global_upload_file'" [findFiles]="true"
+                                        (selectedFilesOut)="onSelectFile($event,'attachment')"
+                                        (filesRegistered)="onFilesRegistered($event,'attachment')" [textInfoLang]="true"
+                                        [attachments]="prepareAttachments()" [module]="'product'"></app-file-upload>
+                                </app-form-fields>
+
+                                }@else {
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_files'"
+                                    [for]="'attachment'" [required]="false">
+                                    <app-file-upload [findFiles]="true" [maxUploads]="4" [allowMultiple]="true"
+                                        [allowExtensions]="['pdf']"
+                                        [textInfo]="'global_upload_file'" [findFiles]="true"
+                                        (selectedFilesOut)="onSelectFile($event,'attachment')"
+                                        (filesRegistered)="onFilesRegistered($event,'attachment')" [textInfoLang]="true"
+                                        [module]="'product'"></app-file-upload>
+                                </app-form-fields>
+                                }
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+
+                    <li ngbNavItem="product_seo" id="product_seo" [class.is-invalid]="tabError === 'product_seo'">
+                        <a ngbNavLink><i class="ri-seo-line"></i>{{ "products_seo" |
+                            translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="product_seo">
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                    [label]="'products_seo_meta_title'" [for]="'seo_title'" [required]="false">
+                                    <input class="form-control" id="seo_title" type="text" placeholder="{{
+                      'products_seo_enter_meta_title' | translate
+                    }}" formControlName="seo_title" />
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                    [label]="'products_seo_meta_desc'" [for]="'seo_description'" [required]="false">
+                                    <textarea class="form-control" id="seo_description" placeholder="{{
+                      'products_seo_enter_meta_desc' | translate
+                    }}" rows="3" formControlName="seo_description"></textarea>
+                                </app-form-fields>
+
+                                @if( prepareMeta()){
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                    [label]="'products_seo_meta_image'" [for]="'meta_image'" [required]="false">
+                                    <app-file-upload [findFiles]="true" [textInfo]="'global_upload_size_600x600'"
+                                        [maxUploads]="1" [allowMultiple]="false"
+                                        [allowExtensions]="['jpg','png','jpeg']" [attachment]="prepareMeta()"
+                                        (selectedFilesOut)="onSelectFile($event, 'seo')"
+                                        (filesRegistered)="onFilesRegistered($event , 'seo')" [textInfoLang]="true"
+                                        [module]="'other'"></app-file-upload>
+                                </app-form-fields>
+                                }@else {
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                    [label]="'products_seo_meta_image'" [for]="'meta_image'" [required]="false">
+                                    <app-file-upload [findFiles]="true" [textInfo]="'global_upload_size_600x600'"
+                                        [maxUploads]="1" [allowMultiple]="false"
+                                        [allowExtensions]="['jpg','png','jpeg']"
+                                        (selectedFilesOut)="onSelectFile($event, 'seo')"
+                                        (filesRegistered)="onFilesRegistered($event , 'seo')" [textInfoLang]="true"
+                                        [module]="'other'"></app-file-upload>
+                                </app-form-fields>
+                                }
+
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="status" [class.is-invalid]="tabError == 'status'">
+                        <a ngbNavLink><i class="ri-shut-down-line"></i>{{ "global_status" |
+                            translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="status">
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'products_offer'"
+                                    [for]="'products_offer'" [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="products_offer" formControlName="status_offer" />
+                                            <span class="switch-state"></span>
+                                        </label>
+                                        <p class="help-text">
+                                            {{ "products_note_offer" | translate }}
+                                        </p>
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'products_featured'"
+                                    [for]="'status_featured'" [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="status_featured"
+                                                formControlName="status_featured" />
+                                            <span class="switch-state"></span>
+                                        </label>
+                                        <p class="help-text">
+                                            {{ "products_note_featured" | translate }}
+                                        </p>
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'products_trending'"
+                                    [for]="'status_trending'" [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="status_trending"
+                                                formControlName="status_trending" />
+                                            <span class="switch-state"></span>
+                                        </label>
+                                        <p class="help-text">
+                                            {{ "products_note_trending" | translate }}
+                                        </p>
+                                    </div>
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_status'"
+                                    [for]="'status'" [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="status" formControlName="status" />
+                                            <span class="switch-state"></span>
+                                        </label>
+                                    </div>
+                                </app-form-fields>
+                            </div>
+                        </ng-template>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="col-xl-8 col-lg-8">
+                <div [ngbNavOutlet]="nav"></div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <app-button [id]="'user_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'"
+                [routerLink]="['/products']">{{
+                "global_cancel" | translate
+                }}
+            </app-button>
+            <app-button [id]="'user_btn_save'">{{
+                "global_save" | translate
+                }}
+            </app-button>
+        </div>
+    </div>
+
+
+    <p-overlayPanel #opRelated>
+        <div class="flex flex-column gap-3 w-25rem">
+            <p-table #tableRelated [value]="products$ | async" [tableStyle]="{ 'min-width': '45rem' }"
+                [styleClass]="'p-datatable-sm'" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10]"
+                [globalFilterFields]="['code', 'name','reference']">
+                <ng-template pTemplate="caption">
+                    <div class="d-flex justify-content-end">
+                        <p-iconField iconPosition="left" class="ml-auto">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input #filterInputRelated pInputText type="text"
+                                (input)="tableRelated.filterGlobal(filterInputRelated.value, 'contains')"
+                                [placeholder]="'global_search_product_enter' | translate" />
+                        </p-iconField>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>{{ 'products_table_id' | translate }}</th>
+                        <th>{{ 'products_table_code' | translate }}</th>
+                        <th>{{ 'products_table_name' | translate }}</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td>{{ product.code }}</td>
+                        <td>{{ product.reference }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>
+                            <p-button [label]="'global_select' | translate" [link]="true" pRipple [size]="'small'"
+                                (click)="onSelectedRelated(product,'related')" />
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </p-overlayPanel>
+    <p-overlayPanel #opCrossSell>
+        <div class="flex flex-column gap-3 w-25rem">
+            <p-table #tableCrossSell [value]="products$ | async" [tableStyle]="{ 'min-width': '45rem' }"
+                [styleClass]="'p-datatable-sm'" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10]"
+                [globalFilterFields]="['code', 'name','reference']">
+                <ng-template pTemplate="caption">
+                    <div class="d-flex justify-content-end">
+                        <p-iconField iconPosition="left" class="ml-auto">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input #filterInputCrossSell pInputText type="text"
+                                (input)="tableCrossSell.filterGlobal(filterInputCrossSell.value, 'contains')"
+                                [placeholder]="'global_search_product_enter' | translate" />
+                        </p-iconField>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>{{ 'products_table_id' | translate }}</th>
+                        <th>{{ 'products_table_code' | translate }}</th>
+                        <th>{{ 'products_table_name' | translate }}</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td>{{ product.code }}</td>
+                        <td>{{ product.reference }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>
+                            <p-button [label]="'global_select' | translate" [link]="true" pRipple [size]="'small'"
+                                (click)="onSelectedRelated(product,'cross_sell')" />
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </p-overlayPanel>
+</form>

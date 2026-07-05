@@ -1,0 +1,41 @@
+<div class="row m-0">
+    <div class="col-xl-5 p-0">
+        <app-page-wrapper [gridClass]="'col-sm-12'" [title]="'content.menu.menus'">
+
+            <div button>
+                <app-a-button [text]="'global_new'" [icon]="'add'" [link]="'/menus'"></app-a-button>
+            </div>
+
+            @if(ecommerces && ecommerces.length > 0){
+            <div class="row">
+                @for(ecommerce of ecommerces; track ecommerce; let i = $index){
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input text-green" 
+                                type="radio" 
+                                name="ecommerce" 
+                                id="ecommerce-{{ecommerce.value}}"
+                                [value]="ecommerce.value"
+                                [checked]="checkSelectedEcommerce(ecommerce)"
+                                (change)="updateEcommerce(ecommerce)"
+                            />
+                            <label class="form-check-label mb-0" for="ecommerce-{{ecommerce.value}}">
+                               {{ ecommerce.label }}
+                            </label>
+                        </div>
+                    </div>
+                }
+            </div>
+            }
+            <app-tree 
+                [data]="(contentMenu$ | async)?.datos"
+                [recursionKey]="'submenus'"
+            ></app-tree>
+        </app-page-wrapper>
+
+    </div>
+    <div class="col-xl-7 p-0">
+        <app-form-menu [type]="type"></app-form-menu>
+    </div>
+</div>

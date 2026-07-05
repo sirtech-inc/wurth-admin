@@ -1,0 +1,20 @@
+<li class="cursor-pointer" [class.inside-ul]="node[recursionKey] && node[recursionKey].length">
+    <div> 
+        <i class="tree-icon file-icon" role="presentation" (click)="showChildrenNode = !showChildrenNode"></i>
+        <span [class]="node.code == id ? 'active' : ''" [class.disabled]="node.status != '1'">{{ node[displayKey] || node?.name}}</span>
+        <div class="tree-options">
+            <a href="javascript:void(0)"  
+                [routerLink]="['/menus/edit', node?.code]">
+                <i class="ri-pencil-line text-success"></i>
+            </a>
+        </div>
+    </div>
+    <ul *ngIf="node[recursionKey] && node[recursionKey].length && showChildrenNode">
+        <app-tree-node 
+            [node]="node" 
+            [displayKey]="displayKey" 
+            [recursionKey]="recursionKey" 
+            *ngFor="let node of node[recursionKey]">
+        </app-tree-node>
+    </ul>
+</li>

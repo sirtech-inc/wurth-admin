@@ -1,0 +1,103 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'categories_' + type">
+    <form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="onSave()">
+        <app-form-fields [inline]="'vertical'" [label]="'categories_name' | translate" [for]="'name'" [required]="true">
+            <input class="form-control" type="text" placeholder="{{ 'categories_enter_name' | translate }}"
+                   formControlName="name"/>
+            <div class="invalid-feedback"
+                 *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']">
+                {{ 'categories_required_name' | translate }}
+            </div>
+        </app-form-fields>
+
+        <app-form-fields [inline]="'vertical'" [label]="'categories_description' | translate" [for]="'description'"
+                         [required]="false">
+      <textarea class="form-control" placeholder="{{ 'categories_enter_description' | translate }}"
+                formControlName="description" rows="3"></textarea>
+        </app-form-fields>
+
+        <app-form-fields [inline]="'vertical'" [label]="'categories_parent' | translate" [for]="'category'"
+                         [required]="false">
+            <app-advanced-dropdown
+                    [selectSingle]="true"
+                    [selectedOption]="category && category.parent_id ? [category.parent_id] : []"
+                    [options]="categories"
+                    [subArrayKey]="'subcategories'"
+                    (selectedItem)="onSelectCategoryItem($event)"
+            >
+            </app-advanced-dropdown>
+        </app-form-fields>
+
+        @if (prepareImage()) {
+            <app-form-fields [inline]="'vertical'" [label]="'global_image' | translate" [for]="'image'">
+                <app-file-upload
+                        [maxUploads]="1"
+                        [allowExtensions]="['png', 'jpeg', 'jpg']"
+                        [allowMultiple]="false"
+                        [attachment]="prepareImage()"
+                        (selectedFilesOut)="onSelectFile($event , 'image')"
+                >
+                </app-file-upload>
+            </app-form-fields>
+        } @else {
+            <app-form-fields [inline]="'vertical'" [label]="'global_image' | translate" [for]="'image'">
+                <app-file-upload
+                        [maxUploads]="1"
+                        [allowExtensions]="['png', 'jpeg', 'jpg']"
+                        [allowMultiple]="false"
+                        (selectedFilesOut)="onSelectFile($event , 'image')"
+                >
+                </app-file-upload>
+            </app-form-fields>
+        }
+
+
+        @if (prepareIcon()) {
+
+            <app-form-fields [inline]="'vertical'" [label]="'global_icon' | translate" [for]="'icon'">
+                <app-file-upload
+                        [maxUploads]="1"
+                        [allowExtensions]="['png', 'jpeg', 'jpg']"
+                        [allowMultiple]="false"
+                        [attachment]="prepareIcon()"
+                        (selectedFilesOut)="onSelectFile($event , 'icon')"
+                >
+                </app-file-upload>
+            </app-form-fields>
+
+        } @else {
+
+            <app-form-fields [inline]="'vertical'" [label]="'global_icon' | translate" [for]="'icon'">
+                <app-file-upload
+                        [maxUploads]="1"
+                        [allowExtensions]="['png', 'jpeg', 'jpg']"
+                        [allowMultiple]="false"
+                        (selectedFilesOut)="onSelectFile($event , 'icon')"
+                >
+                </app-file-upload>
+            </app-form-fields>
+
+        }
+
+        <app-form-fields [inline]="'vertical'" [label]="'global_status' | translate" [for]="'status'"
+                         [required]="false">
+            <div class="form-check form-switch ps-0">
+                <label class="switch">
+                    <input type="checkbox" id="status" formControlName="status"/>
+                    <span class="switch-state"></span>
+                </label>
+            </div>
+        </app-form-fields>
+
+        <app-form-fields [inline]="'vertical'" [label]="'categories_priority' | translate" [for]="'priority'" [required]="true">
+            <input class="form-control" type="text" placeholder="{{ 'categories_priority_enter' | translate }}"  formControlName="priority"/>
+        </app-form-fields>
+
+
+        <div class="d-flex justify-content-end gap-2">
+            <app-button
+                    [id]="'category_btn_save'"
+                    [type]="'primary'">{{ "global_save" | translate }}
+            </app-button>
+        </div>
+    </form>
+</app-page-wrapper>

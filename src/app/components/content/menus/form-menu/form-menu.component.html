@@ -1,0 +1,106 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'content.menu.menus_' + type">
+    <form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="onSave()">
+
+        <!-- Name of menu -->
+        <app-form-fields [inline]="'vertical'" [label]="'content.menu.forms.menu_name'" [for]="'name'"
+            [required]="true">
+            <input class="form-control" id="name" type="text"
+                placeholder="{{ 'content.menu.forms.menu_name_enter' | translate }}" formControlName="name">
+        </app-form-fields>
+
+        <!-- Position of menu -->
+        <app-form-fields [inline]="'vertical'" [label]="'content.menu.forms.position'" [for]="'position'"
+            [required]="true">
+            <select2 
+                [data]="positions$ | async" 
+                class="custom-select" 
+                id="position"
+                [placeholder]="'global_selected_option' | translate" 
+                [multiple]="false" 
+                formControlName="position">
+            </select2>
+        </app-form-fields>
+
+        <!-- Menu Parent -->
+        <app-form-fields 
+            [inline]="'vertical'" 
+            [label]="'content.menu.forms.parent_menu' | translate" [for]="'parent'"
+            [required]="false"
+            >
+            <app-advanced-dropdown 
+            [selectSingle]="true" 
+            [options]="(menus$ | async)?.datos" [position]="'top'"
+            [selectedOption]="getFieldForm('parent_id') ? [ Number(getFieldForm('parent_id'))] : []"
+            [subArrayKey]="'submenus'"
+            (selectedItem)="onSelectMenuItem($event)"
+            >
+            </app-advanced-dropdown>
+        </app-form-fields>
+
+        <!-- Is External Link -->
+        <app-form-fields
+        [labelWidth]="3"
+        [label]="'content.menu.forms.check_external_link'">
+            <div class="form-check form-switch ps-0">
+                <label class="switch">
+                    <input type="checkbox" formControlName="check_external_link">
+                    <span class="switch-state"></span>
+                </label>
+            </div>
+        </app-form-fields>
+
+        @if(checkExternalLink){
+            <!-- Link external -->
+            <app-form-fields [inline]="'vertical'" [label]="'content.menu.forms.link_external'" [for]="'link_external'">
+                <input class="form-control" 
+                    id="link_external" type="text"
+                    formControlName="link_external"
+                    placeholder="{{ 'content.menu.forms.link_external_enter' | translate }}">
+            </app-form-fields>
+        }@else {
+            <!-- Content page -->
+            <app-form-fields [inline]="'vertical'" [label]="'content.menu.forms.page'">
+                <select2 
+                    [data]="pagesSelect2$ | async" 
+                    class="custom-select" 
+                    [placeholder]="'content.menu.forms.page_enter' | translate"
+                    [multiple]="false"
+                    formControlName="fk_content"
+                    >
+                </select2>
+            </app-form-fields>
+        }
+
+        <!-- Reference -->
+        <app-form-fields 
+        [inline]="'vertical'" 
+        [label]="'content.menu.forms.reference'" [for]="'reference'">
+            <input class="form-control" id="reference" type="text"
+                placeholder="{{ 'content.menu.forms.reference_enter' | translate }}" formControlName="reference">
+        </app-form-fields>
+
+        <!-- Status -->
+        <app-form-fields [label]="'global_status'">
+            <div class="form-check form-switch ps-0">
+                <label class="switch">
+                    <input type="checkbox" formControlName="status">
+                    <span class="switch-state"></span>
+                </label>
+            </div>
+        </app-form-fields>
+
+        <!-- Actions Button -->
+        <div class="d-flex justify-content-end gap-2">
+            <app-button [id]="'pack_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'"
+                        [routerLink]="['/menus']">{{
+                    "global_cancel" | translate
+                }}
+            </app-button>
+            <app-button [id]="'btn_btn_save'">{{
+                    "global_save" | translate
+                }}
+            </app-button>
+        </div>
+
+    </form>
+</app-page-wrapper>

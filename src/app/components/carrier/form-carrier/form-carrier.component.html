@@ -1,0 +1,248 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="onSave()">
+    <div class="vertical-tabs">
+        <div class="row">
+            <div class="col-xl-3 col-lg-4">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-pills" orientation="vertical">
+
+                    <li ngbNavItem="general_settings" id="general_settings"
+                        [class.is-invalid]="tabError == 'general_settings'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{ 'carriers_general' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="general_settings" [formGroupName]="'carrier'">
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'carriers_name'"
+                                                 [for]="'name'" [required]="true">
+                                    <input class="form-control" id="name" type="text" formControlName="name">
+                                    @if (getErrors('carrier', 'name') && getErrors('carrier', 'name').required) {
+                                        <div class="invalid-feedback">
+                                            {{ "carriers_form_validator_name_required" | translate }}
+                                        </div>
+                                    }
+                                </app-form-fields>
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                 [label]="'carriers_short_description'" [for]="'short_description'">
+                                    <textarea
+                                            formControlName="description"
+                                            class="form-control" id="sort_description"
+                                            placeholder="{{ 'carriers_enter_short_description' | translate }}"
+                                            rows="3"></textarea>
+                                </app-form-fields>
+
+                                @if (prepareImage()) {
+                                    <app-form-fields [inline]="'horizontal'" [labelWidth]="4"
+                                                     [label]="'global_images' | translate" [for]="'icon'">
+                                        <app-file-upload
+                                                [findFiles]="true" [maxUploads]="1" [allowMultiple]="false"
+                                                [allowExtensions]="['jpg','png','jpeg']"
+                                                [textInfo]="'global_upload_size_600x600'"
+                                                (selectedFilesOut)="onSelectFile($event)"
+                                                [attachment]="prepareImage()"
+                                                (filesRegistered)="onFilesRegistered($event)"
+                                                [textInfoLang]="true" [module]="'carrier'"></app-file-upload>
+                                    </app-form-fields>
+                                } @else {
+                                    <app-form-fields [inline]="'horizontal'" [labelWidth]="4"
+                                                     [label]="'global_images' | translate" [for]="'icon'">
+                                        <app-file-upload
+                                                [findFiles]="true" [maxUploads]="1" [allowMultiple]="false"
+                                                [allowExtensions]="['jpg','png','jpeg']"
+                                                [textInfo]="'global_upload_size_600x600'"
+                                                (selectedFilesOut)="onSelectFile($event)"
+                                                (filesRegistered)="onFilesRegistered($event)"
+                                                [textInfoLang]="true" [module]="'carrier'"></app-file-upload>
+                                    </app-form-fields>
+                                }
+
+                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_status'"
+                                                 [for]="'status'" [required]="false">
+                                    <div class="form-check form-switch ps-0">
+                                        <label class="switch">
+                                            <input type="checkbox" id="status" formControlName="status">
+                                            <span class="switch-state"></span>
+                                        </label>
+                                    </div>
+                                </app-form-fields>
+
+                            </div>
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="location_costs" id="location_costs"
+                        [class.is-invalid]="tabError == 'location_costs'">
+                        <a ngbNavLink><i class="ri-map-pin-line"></i>{{ 'carriers_location' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="tab" tab="location_costs">
+
+
+                                <!--- LOCATION --->
+                                <div [formGroupName]="'location'">
+
+                                    <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                     [label]="'carriers_free_shipping'" [for]="'free_shipping'"
+                                                     [required]="false">
+                                        <div class="form-check form-switch ps-0">
+                                            <label class="switch">
+                                                <input type="checkbox" id="free_shipping"
+                                                       formControlName="free_shipping">
+                                                <span class="switch-state"></span>
+                                            </label>
+                                        </div>
+                                    </app-form-fields>
+
+                                    <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                     [label]="'carriers_tax_included'" [for]="'taxes'"
+                                                     [required]="false">
+                                        <div class="form-check form-switch ps-0">
+                                            <label class="switch">
+                                                <input type="checkbox" id="taxes" formControlName="tax_included">
+                                                <span class="switch-state"></span>
+                                            </label>
+                                        </div>
+                                    </app-form-fields>
+
+                                </div>
+
+                                <!---- RANGE ---->
+                                <div [formArrayName]="'range'">
+                                    <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                     [label]="'carriers_ranges'"
+                                                     [labelChild]="'carriers_ranges_conditions'"
+                                                     [for]="'ranges'">
+                                        <div class="row">
+                                            <div class="col-sm-2"></div>
+                                            @for (range of ranges.controls; let i = $index; track range) {
+                                                <div class="col-sm-2" [formGroupName]="i">
+                                                    <div class="col-sm-12">
+                                                        <input type="text" class="form-control form-control-sm mb-2"
+                                                               placeholder="{{ 'global_min' | translate }}"
+                                                               [formControlName]="'range_min'"
+                                                               numbersOnly
+                                                               [allowDecimal]="true"
+                                                               [ngClass]="{'invalid-control': range.get('range_min').errors}"
+                                                        >
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <input type="text" class="form-control form-control-sm mb-2"
+                                                               placeholder="{{ 'global_max' | translate }}"
+                                                               [formControlName]="'range_max'"
+                                                               numbersOnly
+                                                               [allowDecimal]="true"
+                                                               [ngClass]="{'invalid-control': range.get('range_max').errors}"
+                                                        >
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </app-form-fields>
+                                </div>
+
+                                <!-- DEPARTMENTS -->
+                                <div [formArrayName]="'department'">
+                                    <div class="row">
+                                        @for (department of departments.controls; let i = $index; track department) {
+                                            <div [formGroupName]="i">
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="department.get('department_name').value">
+
+                                                    <div class="row">
+                                                        <div class="col-sm-2 text-center">
+                                                            <div class="form-check form-switch">
+                                                                <input class="checkbox_animated form-check-input check-it"
+                                                                       [ngStyle]="{'margin-left': '-1.5em'}"
+                                                                       formControlName="active"
+                                                                       type="checkbox"
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        <ng-container [formArrayName]="'costs'">
+
+                                                            @for (cost of costs(i).controls; let j = $index; track cost) {
+
+                                                                <div class="col-sm-2" [formGroupName]="j">
+
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12">
+                                                                            <input type="text"
+                                                                                   class="form-control form-control-sm mb-2"
+                                                                                   [formControlName]="'shipping_cost'"
+                                                                                   numbersOnly
+                                                                                   [allowDecimal]="true"
+                                                                            >
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <!-- Delete column range -->
+                                                                    @if (isLastDepartment(i) && j > 0) {
+                                                                        <div class="row">
+                                                                            <div class="col-12">
+                                                                                <app-button
+                                                                                        [type]="'button'"
+                                                                                        [size]="'sm'"
+                                                                                        (click)="onRemoveColumn(j)"
+                                                                                >{{ "global_remove" | translate }}
+                                                                                </app-button>
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+
+
+                                                                </div>
+
+                                                            }
+                                                        </ng-container>
+
+                                                    </div>
+                                                </app-form-fields>
+                                            </div>
+                                        }
+
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-start gap-2">
+                                                <app-button
+                                                        [disabled]="limitRangeCols"
+                                                        [type]="'button'"
+                                                        [size]="'sm'"
+                                                        (click)="onAddRange()"
+                                                >{{ "global_add_range" | translate }}
+                                                </app-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </ng-template>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xl-9 col-lg-8">
+                <div [ngbNavOutlet]="nav"></div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <app-button [id]="'carrier_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'"
+                        [routerLink]="['/carriers']">{{
+                    "global_cancel" | translate
+                }}
+            </app-button>
+
+            <app-button
+                    [disabled]="carrierLoader$ | async"
+                    [spinnerManually]="carrierLoader$ | async"
+                    [id]="'carrier_btn_save'">{{
+                    "global_save" | translate
+                }}
+            </app-button>
+
+
+        </div>
+    </div>
+</form>

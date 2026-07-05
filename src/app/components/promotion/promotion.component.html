@@ -1,0 +1,23 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'promotions'">
+    <div button >
+        <div class="row justify-content-end">
+            <div class="col">
+                <app-a-button [text]="'global_new'" [icon]="'add'" [link]="'/promotions/create'" ></app-a-button>
+            </div>
+        </div>
+    </div>
+    <app-table 
+        [tableConfig]="tableConfig"
+        [hasCheckbox]="false"
+        [hasDuplicate]="false"
+        [topbar]="false"
+        (tableChanged)="onTableChange($event)"
+        (action)="onActionClicked($event)"
+        >
+    </app-table>
+</app-page-wrapper>
+@if(openModal){
+    <app-upload-promotion #uploadPromotionModal
+    (opened)="openModal = $event"
+    ></app-upload-promotion>
+}

@@ -1,0 +1,1272 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="onSave()">
+    <div class="vertical-tabs">
+        <div class="row">
+            <div class="col-xl-3 col-lg-4">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="tabActive" class="nav-pills" orientation="vertical">
+
+                    <li ngbNavItem="main" [formGroupName]="'main'">
+
+                        <a ngbNavLink><i
+                                class="ri-settings-line"></i>{{ 'setting.tab_main' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <app-form-fields [labelWidth]="3" [inline]="'horizontal'"
+                                             [label]="'setting.site_title'"
+                                             [for]="'general_site_title'">
+                                <input class="form-control" id="site_title" type="text"
+                                       formControlName="general_site_title">
+                            </app-form-fields>
+
+                            <app-form-fields [labelWidth]="3" [inline]="'horizontal'"
+                                             [label]="'setting.site_tag_line'"
+                                             [for]="'general_site_tagline'">
+                                <input class="form-control" id="general_site_tagline" type="text"
+                                       formControlName="general_site_tagline">
+                            </app-form-fields>
+
+                            <app-form-fields [labelWidth]="3" [inline]="'horizontal'"
+                                             [label]="'setting.site_copyright'"
+                                             [for]="'general_copyright_text'">
+                                <input class="form-control" id="general_copyright_text" type="text"
+                                       formControlName="general_copyright_text">
+                            </app-form-fields>
+                        </ng-template>
+
+                    </li>
+
+                    <li ngbNavItem="maintenance" [formGroupName]="'maintenance'">
+                        <a ngbNavLink><i
+                                class="ri-settings-line"></i>{{ 'setting.tab_maintenance_logo' | translate }}</a>
+                        <ng-template ngbNavContent>
+
+                            <div class="customize-accordion variant-accordion">
+                                <ng-container>
+                                    <div ngbAccordion [closeOthers]="true">
+
+                                        <div ngbAccordionItem [collapsed]="false">
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.collapse_logo_title' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+
+                                                <app-form-fields
+                                                        [inline]="'horizontal'" [labelWidth]="3"
+                                                        [label]="'setting.logo' | translate"
+                                                        [for]="'logo'"
+                                                >
+                                                    @if (prepareImage('light')) {
+                                                        <app-file-upload [findFiles]="false"
+                                                                         [maxUploads]="1" [allowMultiple]="false"
+                                                                         [allowExtensions]="DATA.imageExtensions"
+                                                                         [sizeMaxUploadMb]="0.5"
+                                                                         (selectedFilesOut)="onSelectFiles($event,'light')"
+                                                                         [attachment]="prepareImage('light')"
+                                                        ></app-file-upload>
+                                                    } @else {
+                                                        <app-file-upload [findFiles]="false"
+                                                                         [maxUploads]="1" [allowMultiple]="false"
+                                                                         [allowExtensions]="DATA.imageExtensions"
+                                                                         [sizeMaxUploadMb]="0.5"
+                                                                         (selectedFilesOut)="onSelectFiles($event,'light')"
+                                                        ></app-file-upload>
+                                                    }
+
+                                                </app-form-fields>
+
+                                                <app-form-fields
+                                                        [inline]="'horizontal'" [labelWidth]="3"
+                                                        [label]="'setting.logo_dark' | translate"
+                                                        [for]="'logo_dark'"
+                                                >
+                                                    @if (prepareImage('dark')) {
+                                                        <app-file-upload [findFiles]="false"
+                                                                         [maxUploads]="1" [allowMultiple]="false"
+                                                                         [allowExtensions]="DATA.imageExtensions"
+                                                                         [sizeMaxUploadMb]="0.5"
+                                                                         (selectedFilesOut)="onSelectFiles($event,'dark')"
+                                                                         [attachment]="prepareImage('dark')"
+                                                        ></app-file-upload>
+                                                    } @else {
+                                                        <app-file-upload [findFiles]="false"
+                                                                         [maxUploads]="1" [allowMultiple]="false"
+                                                                         [allowExtensions]="DATA.imageExtensions"
+                                                                         [sizeMaxUploadMb]="0.5"
+                                                                         (selectedFilesOut)="onSelectFiles($event,'dark')"
+                                                        ></app-file-upload>
+                                                    }
+
+                                                </app-form-fields>
+
+                                                <app-form-fields
+                                                        [inline]="'horizontal'" [labelWidth]="3"
+                                                        [label]="'setting.logo_tiny' | translate"
+                                                        [for]="'logo_tiny'"
+                                                >
+                                                    @if (prepareImage('tiny')) {
+                                                        <app-file-upload [findFiles]="false"
+                                                                         [maxUploads]="1" [allowMultiple]="false"
+                                                                         [allowExtensions]="DATA.imageExtensions"
+                                                                         [sizeMaxUploadMb]="0.5"
+                                                                         (selectedFilesOut)="onSelectFiles($event,'tiny')"
+                                                                         [attachment]="prepareImage('tiny')"
+                                                        ></app-file-upload>
+                                                    } @else {
+                                                        <app-file-upload [findFiles]="false"
+                                                                         [maxUploads]="1" [allowMultiple]="false"
+                                                                         [allowExtensions]="DATA.imageExtensions"
+                                                                         [sizeMaxUploadMb]="0.5"
+                                                                         (selectedFilesOut)="onSelectFiles($event,'tiny')"
+                                                        ></app-file-upload>
+                                                    }
+
+                                                </app-form-fields>
+
+                                                <app-form-fields
+                                                        [inline]="'horizontal'" [labelWidth]="3"
+                                                        [label]="'setting.favicon' | translate"
+                                                        [for]="'favicon'"
+                                                >
+                                                    @if (prepareImage('favicon')) {
+                                                        <app-file-upload [findFiles]="false"
+                                                                         [maxUploads]="1" [allowMultiple]="false"
+                                                                         [allowExtensions]="DATA.imageExtensions"
+                                                                         [sizeMaxUploadMb]="0.5"
+                                                                         (selectedFilesOut)="onSelectFiles($event,'favicon')"
+                                                                         [attachment]="prepareImage('favicon')"
+                                                        ></app-file-upload>
+                                                    } @else {
+                                                        <app-file-upload [findFiles]="false"
+                                                                         [maxUploads]="1" [allowMultiple]="false"
+                                                                         [allowExtensions]="DATA.imageExtensions"
+                                                                         [sizeMaxUploadMb]="0.5"
+                                                                         (selectedFilesOut)="onSelectFiles($event,'favicon')"
+                                                        ></app-file-upload>
+                                                    }
+                                                </app-form-fields>
+
+                                            </div>
+                                        </div>
+
+                                        <div ngbAccordionItem>
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.collapse_maintenance_title' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+
+                                                <app-form-fields [labelWidth]="3" [inline]="'horizontal'"
+                                                                 [label]="'setting.in_maintenance'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'general_maintenance_mode'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+
+
+                                                @if (getFieldBool('maintenance', 'general_maintenance_mode') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="3" [inline]="'horizontal'"
+                                                                         [label]="'setting.maintenance_title'"
+                                                                         [for]="'general_maintenance_title'">
+                                                            <input class="form-control" id="general_maintenance_title"
+                                                                   type="text"
+                                                                   formControlName="general_maintenance_title">
+                                                        </app-form-fields>
+
+                                                        <app-form-fields
+                                                                [inline]="'horizontal'" [labelWidth]="3"
+                                                                [label]="'setting.maintenance_image' | translate"
+                                                                [for]="'logo'"
+                                                        >
+                                                            @if (prepareImage('maintenance')) {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'maintenance')"
+                                                                                 [attachment]="prepareImage('maintenance')"
+                                                                ></app-file-upload>
+                                                            } @else {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'maintenance')"
+                                                                ></app-file-upload>
+                                                            }
+
+                                                        </app-form-fields>
+
+                                                        <app-form-fields [labelWidth]="3" [inline]="'horizontal'"
+                                                                         [label]="'setting.maintenance_message'"
+                                                                         [for]="'general_maintenance_description'">
+                                                            <input class="form-control"
+                                                                   id="general_maintenance_description"
+                                                                   type="text"
+                                                                   formControlName="general_maintenance_description">
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </ng-container>
+                            </div>
+
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="social_networks" [formGroupName]="'social_networks'">
+                        <a ngbNavLink><i
+                                class="ri-settings-line"></i>{{ 'setting.tab_social_networks' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            @for (social of socialNetworks.controls; let i = $index; track social) {
+
+                                <app-form-fields
+                                        [formGroupName]="i"
+                                        [inline]="'horizontal'" [labelWidth]="3"
+                                        [label]="social.get('name').value"
+                                        [labelCentered]="false">
+
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-sm-10 row justify-content-between">
+
+                                                <app-form-fields [labelWidth]="3" [inline]="'horizontal'"
+                                                                 [label]="'global_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox" [formControlName]="'status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                <app-form-fields [labelWidth]="3" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.setting_social_network_url'"
+                                                >
+                                                    <input class="form-control" type="text" [formControlName]="'url'">
+                                                </app-form-fields>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </app-form-fields>
+                            }
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="general" [formGroupName]="'general'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{ 'setting.tab_setting_global' | translate }}</a>
+                        <ng-template ngbNavContent>
+
+                            <div class="customize-accordion variant-accordion">
+                                <ng-container>
+                                    <div ngbAccordion [closeOthers]="true">
+
+                                        <div ngbAccordionItem [collapsed]="false">
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.general.tab_other' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.back_to_top_enable'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'service_back_to_top_enable'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                            </div>
+                                        </div>
+
+                                        <div ngbAccordionItem>
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.general.tab_sidebar' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.service_cart_enable'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'service_cart_enable'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.service_contact_mail_enable'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'service_contact_mail_enable'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'service_contact_mail_enable') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.service_contact_mail'"
+                                                                         [for]="'service_contact_mail'">
+                                                            <input class="form-control"
+                                                                   id="service_contact_mail"
+                                                                   type="text"
+                                                                   formControlName="service_contact_mail">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.service_contact_mail_description'"
+                                                                         [for]="'service_contact_mail_description'">
+                                                            <input class="form-control"
+                                                                   id="service_contact_mail_description"
+                                                                   type="text"
+                                                                   formControlName="service_contact_mail_description">
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.service_whatsapp_enable'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'service_whatsapp_enable'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'service_whatsapp_enable') === true) {
+                                                    <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                     [label]="'setting.general.service_whatsapp_phone'"
+                                                                     [for]="'service_whatsapp_phone'">
+                                                        <input class="form-control" id="service_whatsapp_phone"
+                                                               type="text"
+                                                               formControlName="service_whatsapp_phone">
+                                                    </app-form-fields>
+
+                                                    <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                     [label]="'setting.general.service_whatsapp_description'"
+                                                                     [for]="'service_whatsapp_description'">
+                                                        <input class="form-control" id="service_whatsapp_description"
+                                                               type="text"
+                                                               formControlName="service_whatsapp_description">
+                                                    </app-form-fields>
+
+                                                    <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                     [label]="'setting.general.service_whatsapp_link'"
+                                                                     [for]="'service_whatsapp_link'">
+                                                        <input class="form-control" id="service_whatsapp_link"
+                                                               type="text"
+                                                               formControlName="service_whatsapp_link">
+                                                    </app-form-fields>
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                        <div ngbAccordionItem>
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.general.tab_header' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.header_call_center_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'header_call_center_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'header_call_center_status') === true) {
+                                                    <div @fade>
+
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.header_call_center_phone'"
+                                                                         [for]="'header_call_center_phone'">
+                                                            <input class="form-control" id="header_call_center_phone"
+                                                                   type="text"
+                                                                   formControlName="header_call_center_phone">
+                                                        </app-form-fields>
+
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.header_call_center_description'"
+                                                                         [for]="'header_call_center_description'">
+                                                            <input class="form-control"
+                                                                   id="header_call_center_description"
+                                                                   type="text"
+                                                                   formControlName="header_call_center_description">
+                                                        </app-form-fields>
+
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.header_notice_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'header_notice_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'header_notice_status') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.header_notice_content'"
+                                                                         [for]="'header_notice_content'"
+                                                                         [belowText]="'setting.general.header_notice_content_help'"
+                                                        >
+                                                        <textarea class="form-control" id="header_notice_content"
+                                                                  rows="3"
+                                                                  formControlName="header_notice_content"></textarea>
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.header_whatsapp_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'header_whatsapp_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'header_whatsapp_status') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.header_whatsapp_description'"
+                                                                         [for]="'header_whatsapp_description'">
+                                                            <input class="form-control" id="header_whatsapp_description"
+                                                                   type="text"
+                                                                   formControlName="header_whatsapp_description">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.header_whatsapp_link'"
+                                                                         [for]="'header_whatsapp_link'">
+                                                            <input class="form-control" id="header_whatsapp_link"
+                                                                   type="text"
+                                                                   formControlName="header_whatsapp_link">
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.header_mail_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'header_mail_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'header_mail_status') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.header_mail_description'"
+                                                                         [for]="'header_mail_description'">
+                                                            <input class="form-control" id="header_mail_description"
+                                                                   type="text"
+                                                                   formControlName="header_mail_description">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.header_mail_email'"
+                                                                         [for]="'header_mail_email'">
+                                                            <input class="form-control" id="header_mail_email"
+                                                                   type="text"
+                                                                   formControlName="header_mail_email">
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                        <div ngbAccordionItem>
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.general.tab_footer' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.footer_category_show'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'footer_category_show'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'footer_category_show') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_category_title'"
+                                                                         [for]="'footer_category_title'">
+                                                            <input class="form-control" id="footer_category_title"
+                                                                   type="text"
+                                                                   formControlName="footer_category_title">
+                                                        </app-form-fields>
+
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_category_ids'">
+
+                                                            <app-advanced-dropdown
+                                                                    [selectSingle]="false"
+                                                                    [position]="'bottom'"
+                                                                    [options]="(categories$ | async)?.datos"
+                                                                    [subArrayKey]="'subcategories'"
+                                                                    [selectedOption]="selectedCategories"
+                                                                    (selectedItem)="onSelectCategoryItem($event)"
+                                                            >
+                                                            </app-advanced-dropdown>
+
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.footer_follow_us_show'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'footer_follow_us_show'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'footer_follow_us_show') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_follow_us_title'"
+                                                                         [for]="'footer_follow_us_title'">
+                                                            <input class="form-control" id="footer_follow_us_title"
+                                                                   type="text"
+                                                                   formControlName="footer_follow_us_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_follow_us_ids'">
+
+                                                            <select2 class="custom-select"
+                                                                     [data]="socialNetworks$ | async"
+                                                                     [placeholder]="'global_selected_option' | translate"
+                                                                     formControlName="footer_follow_us_ids"
+                                                                     resettable
+                                                                     [multiple]="true"
+                                                            >
+                                                            </select2>
+
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.footer_link_show'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'footer_link_show'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'footer_link_show') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_follow_us_title'"
+                                                                         [for]="'footer_link_title'">
+                                                            <input class="form-control" id="footer_link_title"
+                                                                   type="text"
+                                                                   formControlName="footer_link_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_link_ids'">
+                                                            <select2 class="custom-select"
+                                                                     [data]="settingLinks$ | async"
+                                                                     [placeholder]="'global_selected_option' | translate"
+                                                                     formControlName="footer_link_ids"
+                                                                     [multiple]="true"
+                                                                     resettable>
+                                                            </select2>
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.footer_page_show'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'footer_content_show'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'footer_content_show') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_page_title'"
+                                                                         [for]="'footer_content_title'">
+                                                            <input class="form-control" id="footer_content_title"
+                                                                   type="text"
+                                                                   formControlName="footer_content_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_page_ids'">
+                                                            <select2 class="custom-select"
+                                                                     [data]="settingContents$ | async"
+                                                                     [placeholder]="'global_selected_option' | translate"
+                                                                     formControlName="footer_content_ids"
+                                                                     [multiple]="true"
+                                                                     resettable>
+                                                            </select2>
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.footer_contact_us_show'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'footer_contact_us_show'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'footer_contact_us_show') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_contact_us_title'"
+                                                                         [for]="'footer_contact_us_title'">
+                                                            <input class="form-control" id="footer_contact_us_title"
+                                                                   type="text"
+                                                                   formControlName="footer_contact_us_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_contact_us_address_first'"
+                                                                         [for]="'footer_contact_us_address_first'">
+                                                            <input class="form-control"
+                                                                   id="footer_contact_us_address_first"
+                                                                   type="text"
+                                                                   formControlName="footer_contact_us_address_first">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_contact_us_address_second'"
+                                                                         [for]="'footer_contact_us_address_second'">
+                                                            <input class="form-control"
+                                                                   id="footer_contact_us_address_second"
+                                                                   type="text"
+                                                                   formControlName="footer_contact_us_address_second">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_contact_us_support_phone'"
+                                                                         [for]="'footer_contact_us_support_phone'">
+                                                            <input class="form-control"
+                                                                   id="footer_contact_us_support_phone"
+                                                                   type="text"
+                                                                   formControlName="footer_contact_us_support_phone">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_contact_us_support_email'"
+                                                                         [for]="'footer_contact_us_support_email'">
+                                                            <input class="form-control"
+                                                                   id="footer_contact_us_support_email"
+                                                                   type="text"
+                                                                   formControlName="footer_contact_us_support_email">
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.footer_copy_right_show'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'footer_copy_right_show'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'footer_copy_right_show') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields
+                                                                [inline]="'horizontal'" [labelWidth]="4"
+                                                                [label]="'setting.general.footer_copy_right_logo_group' | translate"
+                                                                [for]="'logo'"
+                                                        >
+                                                            @if (prepareImage('logoWurthGroupFooter')) {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'logoWurthGroupFooter')"
+                                                                                 [attachment]="prepareImage('logoWurthGroupFooter')"
+                                                                ></app-file-upload>
+                                                            } @else {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'logoWurthGroupFooter')"
+                                                                ></app-file-upload>
+                                                            }
+
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_copy_right_content'"
+                                                                         [for]="'footer_copy_right_content'">
+                                                            <input class="form-control" id="footer_copy_right_content"
+                                                                   type="text"
+                                                                   formControlName="footer_copy_right_content">
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.footer_payment_show'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'footer_payment_show'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'footer_payment_show') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_payment_title'"
+                                                                         [for]="'footer_payment_title'">
+                                                            <input class="form-control" id="footer_payment_title"
+                                                                   type="text"
+                                                                   formControlName="footer_payment_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields
+                                                                [inline]="'horizontal'" [labelWidth]="4"
+                                                                [label]="'setting.general.footer_payment_payment_image' | translate"
+                                                                [for]="'logo'"
+                                                        >
+                                                            @if (prepareImage('paymentMethodFooter')) {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'paymentMethodFooter')"
+                                                                                 [attachment]="prepareImage('paymentMethodFooter')"
+                                                                ></app-file-upload>
+                                                            } @else {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'paymentMethodFooter')"
+                                                                ></app-file-upload>
+                                                            }
+
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.footer_policies_show'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'footer_policies_show'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('general', 'footer_policies_show') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_policies_ids'">
+                                                            <select2 class="custom-select"
+                                                                     [data]="settingPolicies$ | async"
+                                                                     [placeholder]="'global_selected_option' | translate"
+                                                                     formControlName="footer_policies_ids"
+                                                                     [multiple]="true"
+                                                                     resettable>
+                                                            </select2>
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                        <div ngbAccordionItem>
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.general.tab_product' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.product_payment_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'product_payment_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+
+                                                @if (getFieldBool('general', 'product_payment_status') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.product_payment_checkout_secure_title'"
+                                                                         [for]="'product_payment_checkout_secure_title'">
+                                                            <input class="form-control"
+                                                                   id="product_payment_checkout_secure_title"
+                                                                   type="text"
+                                                                   formControlName="product_payment_checkout_secure_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields
+                                                                [inline]="'horizontal'" [labelWidth]="4"
+                                                                [label]="'setting.general.product_payment_checkout_secure_image' | translate"
+                                                                [for]="'logo'"
+                                                        >
+                                                            @if (prepareImage('checkoutSecureProduct')) {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'checkoutSecureProduct')"
+                                                                                 [attachment]="prepareImage('checkoutSecureProduct')"
+                                                                ></app-file-upload>
+                                                            } @else {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'checkoutSecureProduct')"
+                                                                ></app-file-upload>
+                                                            }
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.product_payment_checkout_method_payment_title'"
+                                                                         [for]="'product_payment_checkout_method_payment_title'">
+                                                            <input class="form-control"
+                                                                   id="product_payment_checkout_method_payment_title"
+                                                                   type="text"
+                                                                   formControlName="product_payment_checkout_method_payment_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields
+                                                                [inline]="'horizontal'" [labelWidth]="4"
+                                                                [label]="'setting.general.product_payment_checkout_method_payment_image' | translate"
+                                                                [for]="'logo'"
+                                                        >
+                                                            @if (prepareImage('checkoutMethodPaymentProduct')) {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'checkoutMethodPaymentProduct')"
+                                                                                 [attachment]="prepareImage('checkoutMethodPaymentProduct')"
+                                                                ></app-file-upload>
+                                                            } @else {
+                                                                <app-file-upload [findFiles]="false"
+                                                                                 [maxUploads]="1"
+                                                                                 [allowMultiple]="false"
+                                                                                 [allowExtensions]="DATA.imageExtensions"
+                                                                                 [sizeMaxUploadMb]="0.5"
+                                                                                 (selectedFilesOut)="onSelectFiles($event,'checkoutMethodPaymentProduct')"
+                                                                ></app-file-upload>
+                                                            }
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.general.product_social_share_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'product_social_share_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+
+                                                @if (getFieldBool('general', 'product_social_share_status') === true) {
+
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.product_social_share_title'"
+                                                                         [for]="'product_social_share_title'">
+                                                            <input class="form-control"
+                                                                   id="product_social_share_title"
+                                                                   type="text"
+                                                                   formControlName="product_social_share_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.product_social_share_ids'">
+                                                            <select2 class="custom-select"
+                                                                     [data]="socialNetworks$ | async"
+                                                                     [placeholder]="'global_selected_option' | translate"
+                                                                     formControlName="product_social_share_ids"
+                                                                     [multiple]="true"
+                                                                     resettable>
+                                                            </select2>
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+
+
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="home" [formGroupName]="'home'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{ 'setting.tab_home' | translate }}</a>
+                        <ng-template ngbNavContent>
+
+                            <div class="customize-accordion variant-accordion">
+                                <ng-container>
+                                    <div ngbAccordion [closeOthers]="true">
+
+                                        <div ngbAccordionItem [collapsed]="false">
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.home.tab_banner' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.home.home_banner_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'home_banner_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.home.home_banner_coupons'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'home_banner_coupons'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.home.home_banner_two_columns'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'home_banner_two_columns'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.home.home_banner_full_width'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'home_banner_full_width'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                            </div>
+                                        </div>
+
+                                        <div ngbAccordionItem>
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.home.tab_other' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.home.home_feature_products'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'home_feature_products_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('home', 'home_feature_products_status') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.home.home_feature_products_title'"
+                                                                         [for]="'home_feature_products_title'">
+                                                            <input class="form-control"
+                                                                   id="home_feature_products_title"
+                                                                   type="text"
+                                                                   formControlName="home_feature_products_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.home.home_feature_products_description'"
+                                                                         [for]="'home_feature_products_description'">
+                                                            <input class="form-control"
+                                                                   id="home_feature_products_description"
+                                                                   type="text"
+                                                                   formControlName="home_feature_products_description">
+                                                        </app-form-fields>
+                                                    </div>
+                                                }
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.home.home_featured_categories_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'home_featured_categories_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if (getFieldBool('home', 'home_featured_categories_status') === true) {
+                                                    <div @fade>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.home.home_featured_categories_title'"
+                                                                         [for]="'home_featured_categories_title'">
+                                                            <input class="form-control"
+                                                                   id="home_featured_categories_title"
+                                                                   type="text"
+                                                                   formControlName="home_featured_categories_title">
+                                                        </app-form-fields>
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.home.home_featured_categories_description'"
+                                                                         [for]="'home_featured_categories_description'">
+                                                            <input class="form-control"
+                                                                   id="home_featured_categories_description"
+                                                                   type="text"
+                                                                   formControlName="home_featured_categories_description">
+                                                        </app-form-fields>
+
+                                                        <!-- CATEGORIA home_featured_categories_ids -->
+                                                        <!-- home_featured_categories_style -->
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.general.footer_category_ids'">
+
+                                                            <app-advanced-dropdown
+                                                                    [selectSingle]="false"
+                                                                    [position]="'bottom'"
+                                                                    [options]="(categories$ | async)?.datos"
+                                                                    [subArrayKey]="'subcategories'"
+                                                                    [selectedOption]="selectedCategoriesHomeFeatured"
+                                                                    (selectedItem)="onSelectCategoryItemHomeFeatured($event)"
+                                                            >
+                                                            </app-advanced-dropdown>
+
+                                                        </app-form-fields>
+
+
+
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                        <div ngbAccordionItem>
+                                            <h2 ngbAccordionHeader>
+                                                <button ngbAccordionButton>{{ 'setting.home.tab_sidebar' | translate }}</button>
+                                            </h2>
+                                            <div ngbAccordionCollapse class="accordion-body">
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.home.home_sidebar_category_title'"
+                                                                 [for]="'home_sidebar_category_title'">
+                                                    <input class="form-control"
+                                                           id="home_sidebar_category_title"
+                                                           type="text"
+                                                           formControlName="home_sidebar_category_title">
+                                                </app-form-fields>
+
+
+
+
+                                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                 [label]="'setting.home.home_sidebar_products_status'">
+                                                    <div class="form-check form-switch ps-0">
+                                                        <label class="switch">
+                                                            <input type="checkbox"
+                                                                   [formControlName]="'home_sidebar_products_status'">
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </app-form-fields>
+                                                @if(getFieldBool('home','home_sidebar_products_status')){
+                                                    <div @fade>
+
+                                                        <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                                         [label]="'setting.home.home_sidebar_products_title'"
+                                                                         [for]="'home_sidebar_products_title'">
+                                                            <input class="form-control"
+                                                                   id="home_sidebar_products_title"
+                                                                   type="text"
+                                                                   formControlName="home_sidebar_products_title">
+                                                        </app-form-fields>
+
+                                                        <!-- Para productos ... -->
+                                                        <app-form-fields [labelWidth]="5" [inline]="'horizontal'"
+                                                                         [label]="'products_cross_sell'"
+                                                                         [for]="'cross_sell_product'" [required]="false">
+                                                            <div class="d-flex flex-column align-items-start gap-2">
+                                                                <app-button
+                                                                        [size]="'sm'"
+                                                                        [icon]="'search'"
+                                                                        (click)="opProductsSidebar.toggle($event)"
+                                                                        [classExtra]="'btn-secondary'"
+                                                                        [type]="'button'">{{ "global_search_product" | translate | uppercase }}
+                                                                </app-button>
+
+                                                                @if (selectedProductsSidebar && selectedProductsSidebar.length > 0) {
+                                                                    <div class="d-flex align-items-center gap-2 flex-wrap w-100 flex-row">
+                                                                        @for(product of selectedProductsSidebar; track  product; let i = $index){
+                                                                            <p-chip [label]="product?.name" [removable]="true" (onRemove)="onRemoveSidebarProduct(product)" />
+                                                                        }
+                                                                    </div>
+                                                                }
+
+                                                            </div>
+                                                        </app-form-fields>
+
+                                                    </div>
+                                                }
+
+
+
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </ng-container>
+                            </div>
+
+
+                        </ng-template>
+                    </li>
+
+                    <li ngbNavItem="other" [formGroupName]="'other'">
+                        <a ngbNavLink><i class="ri-settings-line"></i>{{ 'setting.tab_other' | translate }}</a>
+                        <ng-template ngbNavContent>
+
+                            <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                             [label]="'setting.other.analytics_facebook_pixel_status'">
+                                <div class="form-check form-switch ps-0">
+                                    <label class="switch">
+                                        <input type="checkbox"
+                                               [formControlName]="'analytics_facebook_pixel_status'">
+                                        <span class="switch-state"></span>
+                                    </label>
+                                </div>
+                            </app-form-fields>
+                            @if (getFieldBool('other', 'analytics_facebook_pixel_status') === true) {
+                                <div @fade>
+                                    <app-form-fields [labelWidth]="4" [inline]="'horizontal'"
+                                                     [label]="'setting.other.analytics_facebook_pixel_id'"
+                                                     [for]="'analytics_facebook_pixel_id'">
+                                        <input class="form-control"
+                                               id="analytics_facebook_pixel_id"
+                                               type="text"
+                                               formControlName="analytics_facebook_pixel_id">
+                                    </app-form-fields>
+                                </div>
+                            }
+
+
+                        </ng-template>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xl-9 col-lg-8">
+                <div [ngbNavOutlet]="nav" class="pt-0"></div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+            <app-button [id]="'setting_btn'">
+                {{ 'global_save' | translate }} {{ ecommerce | uppercase }}
+            </app-button>
+        </div>
+    </div>
+</form>
+
+
+<p-overlayPanel #opProductsSidebar>
+    <div class="flex flex-column gap-3 w-25rem">
+        <p-table
+            #tableCrossSell
+            [value]="products$ | async"
+            [tableStyle]="{ 'min-width': '45rem' }"
+            [styleClass]="'p-datatable-sm'"
+            [paginator]="true"
+            [rows]="5"
+            [rowsPerPageOptions]="[5, 10]"
+            [globalFilterFields]="['code', 'name','reference']"
+        >
+            <ng-template pTemplate="caption">
+                <div class="d-flex justify-content-end">
+                    <p-iconField iconPosition="left" class="ml-auto">
+                        <p-inputIcon>
+                            <i class="pi pi-search"></i>
+                        </p-inputIcon>
+                        <input
+                            #filterInputCrossSell
+                            pInputText
+                            type="text"
+                            (input)="tableCrossSell.filterGlobal(filterInputCrossSell.value, 'contains')"
+                            [placeholder]="'global_search_product_enter' | translate"/>
+                    </p-iconField>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>{{ 'products_table_id' | translate }}</th>
+                    <th>{{ 'products_table_code' | translate }}</th>
+                    <th>{{ 'products_table_name' | translate }}</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td>{{ product.code }}</td>
+                    <td>{{ product.reference }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>
+                        <p-button [label]="'global_select' | translate" [link]="true" pRipple [size]="'small'"
+                                  (click)="onSelectedRelated(product)"/>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</p-overlayPanel>

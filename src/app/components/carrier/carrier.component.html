@@ -1,0 +1,35 @@
+<app-page-wrapper [gridClass]="'col-sm-12'" [title]="'carriers'">
+    <div button >
+        <app-a-button [text]="'global_new'" [icon]="'add'" [link]="'/carriers/create'" ></app-a-button>
+    </div>
+
+    <div class="filters row mb-3">
+        <div class="col-md-4">
+            <label for="carrierNameFilter">Nombre</label>
+            <input
+                id="carrierNameFilter"
+                type="text"
+                class="form-control"
+                placeholder="Buscar por nombre"
+                [(ngModel)]="filters.name"
+                autocomplete="off"
+            />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-primary w-100" (click)="applyFilters()">Filtrar</button>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-secondary w-100" (click)="clearFilters()">Limpiar</button>
+        </div>
+    </div>
+
+    <app-table
+            [tableConfig]="tableConfig"
+            [hasCheckbox]="false"
+            [hasDuplicate]="false"
+            [topbar]="false"
+            (tableChanged)="onTableChange($event)"
+            (action)="onActionClicked($event)"
+    >
+    </app-table>
+</app-page-wrapper>

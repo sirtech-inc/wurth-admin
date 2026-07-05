@@ -1,0 +1,60 @@
+<div class="header-wrapper m-0" [class.skeleton-header]="navServices.sidebarLoading">
+    <div class="header-logo-wrapper p-0">
+        <div class="toggle-sidebar" checked="checked">
+            <i (click)="sidebarToggle()" class="ri-apps-line status_toggle middle sidebar-toggle"></i>
+            <a [routerLink]="['/dashboard']" *ngIf="(setting$ | async)?.maintenance?.general_logo_images?.original_url; else siteTitle">
+                <img [src]="(setting$ | async)?.maintenance?.general_logo_images?.original_url" class="img-fluid"
+                    alt="header-logo">
+            </a>
+            <ng-template #siteTitle>
+                <a [routerLink]="['/dashboard']">
+                    <h2 class="text-white">
+                        {{(setting$ | async)?.main?.general_site_title ? (setting$ | async)?.main?.general_site_title.split(' ')[0] : 'Logo Here'}}
+                    </h2>
+                </a>
+            </ng-template>
+        </div>
+    </div>
+    <!-- <app-search></app-search> -->
+
+    <!-- <div class="d-flex flex-row gap-2">
+        <div>
+            <a [routerLink]="['/product/create']" class="btn btn-animation">
+                {{ 'add_product' | translate }}
+            </a>
+        </div>
+        <div>
+            <a [routerLink]="['/order/create']" class="btn btn-animation">
+                {{ 'add_order' | translate }}
+            </a>
+        </div>
+    </div> -->
+
+    <div class="nav-right right-header p-0">
+        <!-- <div class="header-btns d-none d-lg-flex">
+            <a [routerLink]="['/product/create']" class="btn btn-outline">
+                {{ 'add_product' | translate }}
+            </a>
+            <a [routerLink]="['/order/create']" class="btn btn-animation">
+                {{ 'add_order' | translate }}
+            </a>
+        </div> -->
+        <ul class="nav-menus">
+            <!-- <li>
+                <span class="header-search" (click)="clickHeaderOnMobile()">
+                    <i class="ri-search-line"></i>
+                </span>
+            </li> -->
+            <!-- <li>
+                <app-languages></app-languages>
+            </li> -->
+            <li>
+                <app-notification></app-notification>
+            </li>
+            <li>
+                <app-mode></app-mode>
+            </li>
+            <app-profile></app-profile>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+<form class="theme-form theme-form-2 mega-form" (ngSubmit)="onSave()" [formGroup]="form">
+    <div class="row" formGroupName="rol">
+
+        <app-form-fields [inline]="'vertical'" [label]="'roles_name'" [for]="'name'" [required]="true">
+            <input class="form-control" formControlName="name" type="text"
+                placeholder="{{ 'roles_enter_name' | translate }}" name="name">
+                <div class="invalid-feedback" *ngIf="name.touched && name.errors?.['required']">  {{ 'roles_required_name' | translate }}
+            </div>
+        </app-form-fields>
+
+        <app-form-fields [inline]="'vertical'" [label]="'users_status'" [for]="'status'"
+            [required]="false">
+            <div class="form-check form-switch ps-0">
+                <label class="switch">
+                    <input type="checkbox" id="status" formControlName="status">
+                    <span class="switch-state"></span>
+                </label>
+            </div>
+        </app-form-fields>
+
+    </div>
+    <div class="row">
+        <div class="mb-3 d-flex">
+            <h4 class="form-label-title">{{ 'roles_permissions' | translate }} </h4>
+        </div>
+        <app-permissions> </app-permissions>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <app-button [id]="'user_btn_cancel'" [classExtra]="'btn-secondary'" [routerLink]="['/roles']" [type]="'secondary'">{{ 'global_cancel' | translate }}</app-button>
+        <app-button [id]="'user_btn_save'" [type]="'primary'">{{ 'global_save' | translate }}</app-button>
+    </div>
+
+</form>

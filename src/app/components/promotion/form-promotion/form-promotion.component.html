@@ -1,0 +1,210 @@
+<form class="theme-form theme-form-2 mega-form" [formGroup]="form" (ngSubmit)="onSave()">
+
+  <div class="row">
+    <div class="col-12 col-md-4">
+      <app-form-fields [inline]="'vertical'" [label]="'promotions_form_ecommerce'" [for]="'promotions_form_ecommerce'"
+        [required]="true">
+        <select2 [data]="ecommerce$ | async" class="custom-select" [placeholder]="'global_selected_option' | translate"
+          [multiple]="false" formControlName="ecommerce" [value]="prepareEcommerce">
+        </select2>
+        <div class="invalid-feedback"
+          *ngIf="form.controls['ecommerce'].touched && form.controls['ecommerce'].errors?.['required']">
+          {{ "promotion_form_validator_ecommerce_required" | translate }}
+        </div>
+      </app-form-fields>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <app-form-fields [inline]="'vertical'" [label]="'promotions_form_promotion_type'"
+        [for]="'promotions_form_promotion_type'" [required]="true">
+        <select2 [data]="type_promotion$ | async" class="custom-select"
+          [placeholder]="'global_selected_option' | translate" formControlName="type" [value]="prepareType">
+        </select2>
+        <div class="invalid-feedback"
+          *ngIf="form.controls['type'].touched && form.controls['type'].errors?.['required']">
+          {{ "promotion_form_validator_type_required" | translate }}
+        </div>
+      </app-form-fields>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <app-form-fields [inline]="'vertical'" [label]="'promotions_form_division_type'"
+        [for]="'promotions_form_division_type'">
+        <select2 [data]="division$ | async" class="custom-select" [placeholder]="'global_selected_option' | translate"
+          [multiple]="true" formControlName="type_division" [value]="prepareDivision">
+        </select2>
+      </app-form-fields>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <app-form-fields [inline]="'vertical'" [label]="'global_date_from'" [for]="'start_date'" [required]="true">
+        <div class="dp-hidden position-absolute custom-dp-dropdown">
+          <div class="input-group">
+            <input name="datepicker" class="form-control" ngbDatepicker #datepicker="ngbDatepicker"
+              [autoClose]="'outside'" (dateSelect)="onDateSelection($event)" [displayMonths]="displayMonths"
+              [dayTemplate]="t" [navigation]="navigation" [outsideDays]="outsideDays" [startDate]="fromDate!"
+              id="start_date" tabindex="-1" readonly [footerTemplate]="footerTemplate"
+              [showWeekNumbers]="showWeekNumbers" />
+            <ng-template #t let-date let-focused="focused">
+              <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+                [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
+                (mouseleave)="hoveredDate = null">
+                {{ date.day }}
+              </span>
+            </ng-template>
+
+            <ng-template #footerTemplate>
+              <hr class="my-0" />
+              <button class="btn btn-primary btn-sm m-2 float-start" (click)="model = today; datepicker.close()">
+                {{ "global_date_today" | translate }}
+              </button>
+              <button class="btn btn-secondary btn-sm m-2 float-end" (click)="datepicker.close()">
+                {{ "global_date_close" | translate }}
+              </button>
+            </ng-template>
+          </div>
+        </div>
+        <div class="input-group custom-dt-picker">
+          <input #dpFromDate class="form-control" placeholder="yyyy-mm-dd" name="dpFromDate"
+            [value]="formatter.format(fromDate)" id="end_date"
+            (input)="fromDate = validateInput(fromDate, dpFromDate.value)" readonly
+            formControlName="availability_start" />
+          <button class="btn btn-outline-secondary" (click)="datepicker.toggle()" type="button">
+            <i class="ri-calendar-2-line"></i>
+          </button>
+        </div>
+        <div class="invalid-feedback"
+          *ngIf="form.controls['availability_start'].touched && form.controls['availability_start'].errors?.['required']">
+          {{ "global_form_date_start_required" | translate }}
+        </div>
+      </app-form-fields>
+    </div>
+
+    <div class="col">
+      <app-form-fields [inline]="'vertical'" [label]="'global_date_to'" [for]="'end_date'" [required]="true">
+        <div class="input-group custom-dt-picker">
+          <input #dpToDate class="form-control" placeholder="yyyy-mm-dd" name="dpToDate"
+            [value]="formatter.format(toDate)" (input)="toDate = validateInput(toDate, dpToDate.value)" readonly
+            formControlName="availability_end" />
+          <button class="btn btn-outline-secondary" (click)="datepicker.toggle()" type="button">
+            <i class="ri-calendar-2-line"></i>
+          </button>
+        </div>
+
+        <div class="invalid-feedback"
+          *ngIf="form.controls['availability_end'].touched && form.controls['availability_end'].errors?.['required']">
+          {{ "global_form_date_end_required" | translate }}
+        </div>
+
+      </app-form-fields>
+    </div>
+  </div>
+
+  @if(form.controls['type'].value === 1){
+  <div class="row">
+
+    <div class="col">
+      <app-form-fields [inline]="'vertical'" [label]="'promotions_form_condition'"
+        [for]="'promotions_form_promotion_type'" [required]="true">
+        <select2 [data]="condition_promotion$ | async" class="custom-select"
+          [placeholder]="'global_selected_option' | translate" formControlName="condition_promotion">
+        </select2>
+        <div class="invalid-feedback"
+          *ngIf="form.controls['condition_promotion'].touched && form.controls['condition_promotion'].errors?.['required']">
+          {{ "promotion_form_validator_condition_required" | translate }}
+        </div>
+      </app-form-fields>
+    </div>
+
+    @if(form.controls['condition_promotion'].value === 1){
+    <div class="col">
+      <app-form-fields [inline]="'vertical'" [label]="'promotions_form_amount'" [for]="'promotions_form_amount'"
+        [required]="true">
+        <input type="text" class="form-control" id="promotions_form_amount" formControlName="amount" />
+        <div class="invalid-feedback"
+          *ngIf="form.controls['amount'].touched && form.controls['amount'].errors?.['required']">
+          {{ "promotion_form_validator_amount_required" | translate }}
+        </div>
+        <div class="invalid-feedback"
+          *ngIf="form.controls['amount'].touched && form.controls['amount'].errors?.['invalidAmount']">
+          {{ "global_form_amount_invalid" | translate }}
+        </div>
+      </app-form-fields>
+    </div>
+    }
+  </div>
+  }
+
+  <app-form-fields [inline]="'vertical'" [label]="'global_status'" [required]="false">
+    <div class="form-check form-switch ps-0">
+      <label class="switch">
+        <input type="checkbox" formControlName="status" />
+        <span class="switch-state"></span>
+      </label>
+    </div>
+  </app-form-fields>
+
+  <app-form-fields [inline]="'vertical'" [label]="'promotions_form_only_new_customer'" [required]="false">
+    <div class="form-check form-switch ps-0">
+      <label class="switch">
+        <input type="checkbox" formControlName="new_customer" />
+        <span class="switch-state"></span>
+      </label>
+    </div>
+  </app-form-fields>
+
+  <!-- Agregar boton ancho completo -->
+  <!-- @if(!id){ -->
+  <div class="row">
+    <div class="col my-1">
+      <app-button [disabled]="!checkAvailabilityOpen()" [type]="'button'" [icon]="'add'" [size]="'sm'"
+        [classExtra]="'ms-auto me-auto'" (click)="onShowModal()">
+        {{ "promotions_form_btn_add_item" | translate | uppercase }}
+      </app-button>
+    </div>
+  </div>
+  <!-- } -->
+  <!-- Table Items -->
+  <div class="row my-4">
+    <div class="col">
+      @if(form.controls.type.value === 3){
+      <app-table [tableConfig]="tableConfigScale" [hasCheckbox]="false" [topbar]="false" [pagination]="false"
+        [ignoreDelete]="type === 'edit' && id > 0 "></app-table>
+      }
+      @if(form.controls.type.value === 2){
+      <app-table [tableConfig]="tableConfigFinalPrice" [hasCheckbox]="false" [topbar]="false" [pagination]="false"
+        [ignoreDelete]="false" (action)="onRowAction($event)"></app-table>
+      }
+      @if(form.controls.type.value === 1 && form.controls.condition_promotion.value === 1){
+      <app-table [tableConfig]="tableConfigBonusGiftAmount" [hasCheckbox]="false" [topbar]="false" [pagination]="false"
+        [ignoreDelete]="type === 'edit' && id > 0 " (action)="onRowClick($event)"></app-table>
+      }
+      @if(form.controls.type.value === 1 && form.controls.condition_promotion.value === 2){
+      <app-table [tableConfig]="tableConfigBonusGiftQuantity" [hasCheckbox]="false" [topbar]="false"
+        [pagination]="false" [ignoreDelete]="type === 'edit' && id > 0 "></app-table>
+      }
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2">
+    <app-button [id]="'pack_btn_cancel'" [classExtra]="'btn-secondary'" [type]="'button'"
+      [routerLink]="['/promotions']">{{ "global_cancel" | translate
+      }}</app-button>
+
+    <app-button [disabled]="!form.valid || form.controls['products'].value.length === 0" [id]="'promotion_btn'"
+      [icon]="'save'">
+      {{ "global_save" | translate }}
+    </app-button>
+
+  </div>
+</form>
+
+@if(opened){
+<app-form-product-promotion #FormProductPromotionComponent (opened)="opened=$event" [type]="getType()"
+  [condition]="form.controls['condition_promotion'].value" [amount]="form.controls['amount'].value"
+  [items]="form.controls['products'].value" (add)="onAddProduct($event)" (updated)="onProductUpdated()"
+  [ecommerceCtrl]="form.controls['ecommerce']">
+</app-form-product-promotion>
+}
