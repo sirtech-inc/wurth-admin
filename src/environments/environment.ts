@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   // URL: 'http://localhost:1234/assets/data'
-  //API_URL: 'https://localhost:44327/api',
-  API_URL: "https://admin_eshop.wurth.pe:8080/api",
+  API_URL: 'http://localhost:5189/api',
+  //API_URL: "https://admin_eshop.wurth.pe:8080/api",
   apiKey: 'WSq2$GD3!J!woU2gDK1p!cb3G',
   SECRET_KEY_CRYPTO: "6XJCIEJO41PQZNWJC4RRDC#$DF&%ff26",
 };

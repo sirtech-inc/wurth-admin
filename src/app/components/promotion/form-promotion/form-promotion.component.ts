@@ -223,29 +223,39 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
     }
 
     checkAvailabilityOpen(): boolean {
+        const ecommerce = this.form.getRawValue().ecommerce
         const type = this.getType()
         const condition = this.form.getRawValue().condition_promotion // this.form.controls.condition_promotion.value
+        if (!ecommerce) return false
         if (type && (type !== 'lleva-gratis' || (type === 'lleva-gratis' && condition))) return true
         return false
     }
 
     onShowModal() {
+        if (!this.form.getRawValue().ecommerce) {
+            this.notificationService.showWarn('Primero seleccione la tienda o el ecommerce', 'Aviso')
+            return
+        }
         if (!this.checkAvailabilityOpen()) return
         this.opened = true;
         setTimeout(() => {
             this.formProductPromotionComponent.openModal()
-             this.formProductPromotionComponent.setId(0); 
-            
+             this.formProductPromotionComponent.setId(0);
+
         })
     }
 
     onShowModalEdit(code : number) {
+        if (!this.form.getRawValue().ecommerce) {
+            this.notificationService.showWarn('Primero seleccione la tienda o el ecommerce', 'Aviso')
+            return
+        }
         if (!this.checkAvailabilityOpen()) return
         this.opened = true;
         setTimeout(() => {
             this.formProductPromotionComponent.openModal()
-            this.formProductPromotionComponent.setId(code); 
-            
+            this.formProductPromotionComponent.setId(code);
+
         })
     }
 

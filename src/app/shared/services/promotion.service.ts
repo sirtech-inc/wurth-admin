@@ -304,6 +304,10 @@ export class PromotionService {
         return this.http.delete<boolean>(`${environment.API_URL}/PromotionFinalPrice/${code}`);
     }
 
+    deletePromotion(code: number): Observable<boolean> {
+        return this.http.delete<boolean>(`${environment.API_URL}/Promotion/${code}`);
+    }
+
     getProductoPromocionFinal(code: number): Observable<PrepareItemPostResponse> {
         return this.http.get<PrepareItemPostResponse>(`${environment.API_URL}/PromotionFinalPrice/productopromocion/${code}`);
     }
