@@ -77,7 +77,7 @@ export class EditPromotionBonusGiftQuantity {
 
 export class UpdatePromotion {
     static readonly type = "[Promotion] Update";
-    constructor(public payload: OptionalAll<Promotion>, public id: number) { }
+    constructor(public payload: OptionalAll<Promotion>) { }
 }
 
 

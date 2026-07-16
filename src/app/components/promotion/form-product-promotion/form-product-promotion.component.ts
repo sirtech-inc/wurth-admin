@@ -178,12 +178,12 @@ export class FormProductPromotionComponent implements OnInit, OnDestroy {
                 reference: this.form.value.reference,
                 minimum_quantity: this.form.value.quantity_min,
                 discount: this.form.value.discount,
-                quantity: this.form.value.quantity_min,
+                quantity: this.form.value.quantity,
                 amount: 0,
                 fk_product: this.form.value.fk_product,
                 fk_code: this._id,
                 fk_promotion: this.form.value.fk_product,
-                maximum_quantity: this.form.value.quantity_min,
+                maximum_quantity: this.form.value.quantity_max,
 
             };
             this.promociones.updateProductoPromocionFinal(this._id, form).subscribe({

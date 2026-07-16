@@ -165,25 +165,46 @@ export class PromotionState {
     @Action(UpdatePromotion)
     updatePromotion(ctx: StateContext<PromotionStateModel>, { payload }: UpdatePromotion) {
 
-        return this.promotionService.updatePromotion(payload.code, payload).pipe(
+        return this.promotionService.updatePromotion(payload).pipe(
             tap({
                 next: (result) => {
-
-                    const state = ctx.getState();
-                    const promotion = state.promotion.datos;
 
                     if (result.datos === null && result.result === null) {
                         this.store.dispatch(new ResetLoaderStateAction())
                         this.store.dispatch(new HideButtonSpinnerAction())
-                        throw new Error();
+                        this.notificationService.showError('No se pudo actualizar la promoción', 'Aviso')
+                        return;
                     }
 
-                    
+                    const state = ctx.getState();
+                    const promotion = state.promotion.datos;
+
+                    if (payload.type === 'escala') {
+                        this.store.dispatch(new CreatePromotionScale({
+                            idPromotion: result.datos.code,
+                            items: payload.products
+                        }))
+                    }
                     if (payload.type === 'precio-final') {
                         this.store.dispatch(new CreatePromotionFinalPrice({
                             idPromotion: result.datos.code,
                             items: payload.products
                         }))
+                    }
+                    if (payload.type === 'lleva-gratis') {
+                        if (payload.condition_promotion === 1) {
+                            this.store.dispatch(new CreatePromotionBonusGiftAmount({
+                                idPromotion: result.datos.code,
+                                amount: payload.amount,
+                                items: payload.products
+                            }))
+                        }
+                        if (payload.condition_promotion === 2) {
+                            this.store.dispatch(new CreatePromotionBonusGiftQuantity({
+                                idPromotion: result.datos.code,
+                                items: payload.products
+                            }))
+                        }
                     }
 
                     const index = promotion.findIndex((item) => item.code === payload.code);
@@ -203,7 +224,7 @@ export class PromotionState {
                     })
                 },
                 error: (error) => {
-                    this.notificationService.showError(error.error.result.message);
+                    this.notificationService.showError(error?.error?.result?.message || 'No se pudo actualizar la promoción', 'Aviso');
                 }
             })
         )
@@ -222,7 +243,8 @@ export class PromotionState {
 
                     if (result.datos === null && result.result === null) {
                         this.store.dispatch(new ResetLoaderStateAction())
-                        throw new Error();
+                        this.notificationService.showError('No se pudo crear la promoción', 'Aviso')
+                        return;
                     }
 
                     const state = ctx.getState();
@@ -265,7 +287,7 @@ export class PromotionState {
                     }
                 },
                 error: (error) => {
-                    this.notificationService.showError(error.error.result.message);
+                    this.notificationService.showError(error?.error?.result?.message || 'No se pudo crear la promoción', 'Aviso');
                 }
             })
         )
@@ -302,11 +324,12 @@ export class PromotionState {
 
     @Action(CreatePromotionScale)
     createPromotionScale(ctx: StateContext<PromotionStateModel>, { payload }: CreatePromotionScale) {
-        const items: OptionalAll<PrepareItemPostResponse>[] = payload.items.map((item) => {
+        const data = payload.items.filter(x => x.code == 0)
+        const items: OptionalAll<PrepareItemPostResponse>[] = data.map((item) => {
             return {
                 discount: item.discount,
                 fk_code: 0,
-                fk_product: item.code,
+                fk_product: item.fk_product,
                 fk_promotion: payload.idPromotion,
                 maximum_quantity: item.quantity_max,
                 minimum_quantity: item.quantity_min
@@ -366,10 +389,11 @@ export class PromotionState {
     @Action(CreatePromotionBonusGiftAmount)
     createPromotionBonusGiftAmount(ctx: StateContext<PromotionStateModel>, { payload }: CreatePromotionBonusGiftAmount) {
 
-        const items: OptionalAll<PrepareItemPostResponse>[] = payload.items.map((item) => {
+        const data = payload.items.filter(x => x.code == 0)
+        const items: OptionalAll<PrepareItemPostResponse>[] = data.map((item) => {
             const _item: OptionalAll<PrepareItemPostResponse> = {
                 fk_code: 0,
-                fk_product: item.code,
+                fk_product: item.fk_product,
                 fk_promotion: payload.idPromotion,
                 amount: payload.amount
             }
@@ -396,7 +420,8 @@ export class PromotionState {
     @Action(CreatePromotionBonusGiftQuantity)
     createPromotionBonusGiftQuantity(ctx: StateContext<PromotionStateModel>, { payload }: CreatePromotionBonusGiftQuantity) {
 
-        const items: OptionalAll<PrepareItemPostResponse>[] = payload.items.map((item) => {
+        const data = payload.items.filter(x => x.code == 0)
+        const items: OptionalAll<PrepareItemPostResponse>[] = data.map((item) => {
             const _item: OptionalAll<PrepareItemPostResponse> = {
                 fk_code: 0,
                 fk_product: item.fk_product,
@@ -435,7 +460,7 @@ export class PromotionState {
                             this.router.navigate(['/promotions']).then();
                         })
                         this.store.dispatch(new ResetLoaderStateAction());
-                        throw new Error();
+                        return;
                     }
 
                     ctx.patchState({
@@ -548,7 +573,10 @@ export class PromotionState {
                 next: (result) => {
                     if (result.datos) {
                         const state = ctx.getState();
-                        state.selectedPromotion.amount = result.datos[0].amount
+                        const selectedPromotion = state.selectedPromotion ? {
+                            ...state.selectedPromotion,
+                            amount: result.datos[0].amount
+                        } : state.selectedPromotion;
 
                         const prepare: PrepareOption[] = result.datos.map((item, index) => {
                             const _item: PrepareOption = {
@@ -567,8 +595,7 @@ export class PromotionState {
                         });
 
                         ctx.patchState({
-                            ...ctx.getState(),
-                            selectedPromotion: state.selectedPromotion,
+                            selectedPromotion,
                             selectedPromotionItems: prepare
                         })
                     }

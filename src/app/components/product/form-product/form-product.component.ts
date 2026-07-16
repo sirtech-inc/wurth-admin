@@ -375,38 +375,24 @@ export class FormProductComponent implements OnInit, OnDestroy {
   }
 
   onFilesRegistered(event: Attachment[], type: "seo" | "image" | "attachment") {
+    // `event` es la lista completa y actual (showFiles), que puede incluir
+    // archivos recién seleccionados que todavía no se subieron y por lo tanto
+    // no tienen `code` real. Esos se excluyen aquí: se agregan por separado al
+    // guardar (ver onSave), una vez que la subida real devuelve su code.
+    const existingCodes = (event ?? [])
+      .map((item: Attachment) => item.code)
+      .filter((code) => code !== null && code !== undefined);
+
     if (type === "image") {
-      if (event && event.length > 0) {
-        this.form.controls["images_id"].setValue(
-          event.map((item: Attachment) => item.code)
-        );
-      } else {
-        this.form.controls["images_id"].setValue(null);
-      }
+      this.form.controls["images_id"].setValue(existingCodes.length > 0 ? existingCodes : null);
     }
 
     if (type === "seo") {
-      if (event && event.length > 0) {
-        this.form.controls["image_meta_id"].setValue(event[0].code);
-      } else {
-        this.form.controls["image_meta_id"].setValue(null);
-      }
+      this.form.controls["image_meta_id"].setValue(existingCodes.length > 0 ? existingCodes[0] : null);
     }
 
     if (type === "attachment") {
-
-      /*this.form.controls["attachment_id"].setValue(
-        event?.length ? event.map(x => x.code) : null
-      );*/
-
-      if(event?.length > 0) {
-        // si hay nuevos attachments, reemplazo
-        this.form.controls["attachment_id"].setValue(event.map(x => x.code));
-      } else {
-        // ⚠️ si NO subieron nuevos, NO borres los existentes (mantén valor actual)
-        const current = this.form.controls["attachment_id"].value;
-        this.form.controls["attachment_id"].setValue(current);
-      }
+      this.form.controls["attachment_id"].setValue(existingCodes.length > 0 ? existingCodes : null);
     }
 
   }
@@ -487,14 +473,14 @@ export class FormProductComponent implements OnInit, OnDestroy {
             : [];
 
           const existingAttachments = this.form.controls["attachment_id"]?.value ?? [];
-          const attachment_ids = [...existingAttachments, ...newAttachments];
+          const attachment_ids = [...existingAttachments, ...newAttachments].filter((id) => id !== null && id !== undefined);
 
           // 🔹 Manejo seguro de imágenes
           const existingImages = this.form.controls['images_id']?.value ?? [];
           const newImages = fileImage?.length > 0
             ? fileImage.map((resp: any) => Number(resp.code))
             : [];
-          let images_id = [...newImages, ...existingImages];
+          let images_id = [...newImages, ...existingImages].filter((id) => id !== null && id !== undefined);
           images_id = images_id.length > 0 ? images_id : null;
 
           // 🔹 Manejo seguro de metadatos

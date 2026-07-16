@@ -56,44 +56,62 @@ export class FileUploadComponent implements OnInit {
 
   public selectedFiles: File[] | null = [];
   public showFiles: Attachment[] = [];
+  // Espejo de showFiles, mismo índice por posición: el File pendiente de subir
+  // para esa fila, o null si la fila es un adjunto ya existente (o elegido desde
+  // el buscador de archivos). Mantenerlo alineado por índice con showFiles es lo
+  // que permite que onRemove(index) siempre quite el archivo correcto sin
+  // importar el orden en que se fueron agregando.
+  private rawFiles: (File | null)[] = [];
 
   ngOnInit(): void {
     if (this.attachment) {
       this.showFiles.push(this.attachment);
+      this.rawFiles.push(null);
     }
     if (this.attachments && this.attachments.length > 0) {
       this.showFiles.push(...this.attachments);
+      this.rawFiles.push(...this.attachments.map(() => null));
+    }
+  }
+
+  private emitPendingFiles() {
+    const pendingFiles = this.rawFiles.filter((file): file is File => file !== null);
+    this.selectedFiles = pendingFiles;
+
+    if (this.maxUploads === 1) {
+      this.selectedFilesOut.emit(pendingFiles[0] ?? null);
+    } else {
+      this.selectedFilesOut.emit(pendingFiles.length > 0 ? pendingFiles : null);
     }
   }
 
   onSelectedFiles(files: FileList) {
     let error = false;
-    const selectedFiles: File[] = [];
+    const newRawFiles: File[] = [];
     if (
       this.validateFilesFormat(files) === true &&
       this.validateFilesSize(files) === true
     ) {
       for (let i = 0; i < files.length; i++) {
-        if (this.showFiles.length + i >= this.maxUploads && error === false) {
+        if (this.showFiles.length + newRawFiles.length >= this.maxUploads && error === false) {
           this.AlertModal.openModal("global_message_upload_file_exceded");
           error = true;
         }
 
         if (!error) {
-          selectedFiles.push(files.item(i));
-          this.selectedFiles.push(files.item(i));
+          newRawFiles.push(files.item(i));
         }
       }
     }
 
-    if (error === false) {
+    if (error === false && newRawFiles.length > 0) {
 
-      this.attachments = selectedFiles.map((file: File, index: number) => {
+      const newAttachments = newRawFiles.map((file: File, index: number) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => {
           if (file.type.includes("image")) {
-            this.attachments[index].original_url = reader.result as string;
+            newAttachments[index].original_url = reader.result as string;
           }
         }
         return {
@@ -109,13 +127,10 @@ export class FileUploadComponent implements OnInit {
 
       });
 
-      this.showFiles = [...this.attachments, ...this.showFiles];
+      this.showFiles = [...newAttachments, ...this.showFiles];
+      this.rawFiles = [...newRawFiles, ...this.rawFiles];
 
-      if (this.maxUploads === 1) {
-        this.selectedFilesOut.emit(this.selectedFiles[0]);
-      } else {
-        this.selectedFilesOut.emit(this.selectedFiles);
-      }
+      this.emitPendingFiles();
     }
     this.fileInput.nativeElement.value = "";
   }
@@ -164,20 +179,14 @@ export class FileUploadComponent implements OnInit {
   onRemove(index: number) {
     const removedFile = this.showFiles[index];
     this.showFiles.splice(index, 1);
-    this.attachments.splice(index, 1);
-    this.selectedFiles.splice(index, 1);
+    this.rawFiles.splice(index, 1);
 
-    this.filesRegistered.emit(this.attachments);
+    this.filesRegistered.emit(this.showFiles);
     if (this.onDeleteFile) {
       this.onDeleteFile(removedFile, index);
     }
-    
-    if (this.selectedFiles?.length <= 0) {
-      this.selectedFilesOut.emit(null);
-    } else {
-      this.selectedFilesOut.emit(this.selectedFiles);
-    }
 
+    this.emitPendingFiles();
   }
 
   onFindFiles() {
@@ -202,6 +211,7 @@ export class FileUploadComponent implements OnInit {
       original_url: file.original_url,
       size: file.size,
     });
+    this.rawFiles.push(null);
     this.filesRegistered.emit(this.showFiles);
   }
 }

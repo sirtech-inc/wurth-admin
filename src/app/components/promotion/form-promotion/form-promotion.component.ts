@@ -437,7 +437,7 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
         }
         let action = new CreatePromotion(data);
         if (this.type === 'edit') {
-            action = new UpdatePromotion(data, this.id)
+            action = new UpdatePromotion(data)
         }
 
         this.store.dispatch(action)

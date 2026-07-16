@@ -97,7 +97,7 @@ export class PromotionService {
         )
     }
 
-    updatePromotion(id: number, payload: OptionalAll<Promotion>): Observable<ResponseModel<Promotion>> {
+    updatePromotion(payload: OptionalAll<Promotion>): Observable<ResponseModel<Promotion>> {
         const api = `${environment.API_URL}/Promotion`
         return this.apiCoreService.post<OptionalAll<Promotion>>(
             api,

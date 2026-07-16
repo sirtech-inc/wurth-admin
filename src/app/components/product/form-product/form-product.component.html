@@ -224,7 +224,7 @@
                                     [for]="'attachment'" [required]="false">
                                     <app-file-upload [maxUploads]="4" [allowMultiple]="true"
                                         [allowExtensions]="['pdf']"
-                                        [textInfo]="'global_upload_file'" [findFiles]="true"
+                                        [textInfo]="'global_upload_file'"
                                         (selectedFilesOut)="onSelectFile($event,'attachment')"
                                         (filesRegistered)="onFilesRegistered($event,'attachment')" [textInfoLang]="true"
                                         [attachments]="prepareAttachments()" [module]="'product'"></app-file-upload>
@@ -233,9 +233,9 @@
                                 }@else {
                                 <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'global_files'"
                                     [for]="'attachment'" [required]="false">
-                                    <app-file-upload [findFiles]="true" [maxUploads]="4" [allowMultiple]="true"
+                                    <app-file-upload [maxUploads]="4" [allowMultiple]="true"
                                         [allowExtensions]="['pdf']"
-                                        [textInfo]="'global_upload_file'" [findFiles]="true"
+                                        [textInfo]="'global_upload_file'"
                                         (selectedFilesOut)="onSelectFile($event,'attachment')"
                                         (filesRegistered)="onFilesRegistered($event,'attachment')" [textInfoLang]="true"
                                         [module]="'product'"></app-file-upload>
@@ -323,20 +323,6 @@
                                         </label>
                                         <p class="help-text">
                                             {{ "products_note_featured" | translate }}
-                                        </p>
-                                    </div>
-                                </app-form-fields>
-
-                                <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'products_trending'"
-                                    [for]="'status_trending'" [required]="false">
-                                    <div class="form-check form-switch ps-0">
-                                        <label class="switch">
-                                            <input type="checkbox" id="status_trending"
-                                                formControlName="status_trending" />
-                                            <span class="switch-state"></span>
-                                        </label>
-                                        <p class="help-text">
-                                            {{ "products_note_trending" | translate }}
                                         </p>
                                     </div>
                                 </app-form-fields>
