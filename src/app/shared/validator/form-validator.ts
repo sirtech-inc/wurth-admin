@@ -38,7 +38,16 @@ export class FormValidator {
         if (!value) return null;
         let isValid = !isNaN(Number(value)) && Number(value) >= 0 && Number(value) <= 99.99 && /^-?\d+(\.\d{1,2})?$/.test(value);
         return isValid ? null : { invalidDiscount: true };
-    } 
+    }
+
+    // Requiere que se seleccione al menos una accion: envio gratis o aplicar descuento
+    static ActionsRequiredValidator(group: AbstractControl): ValidationErrors | null {
+        const freeShipping = group.get('free_shipping')?.value;
+        const applyDiscount = group.get('apply_discount')?.value;
+        const hasFreeShipping = freeShipping === true || freeShipping === 1;
+        const hasApplyDiscount = applyDiscount !== null && applyDiscount !== undefined && applyDiscount !== '' && Number(applyDiscount) > 0;
+        return hasFreeShipping || hasApplyDiscount ? null : { actionsRequired: true };
+    }
 
 
 }

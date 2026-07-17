@@ -424,6 +424,14 @@
                                             </div>
                                         </app-form-fields>
 
+                                        <div class="text-danger mb-3"
+                                             *ngIf="form.errors?.['actionsRequired'] && (form.controls['free_shipping'].touched || form.controls['apply_discount'].touched)">
+                                            {{
+                                                "coupon_form_validator_actions_required"
+                                                    | translate
+                                            }}
+                                        </div>
+
                                         @if (form.controls.apply_discount.value
                                         === 1) {
                                             <app-form-fields

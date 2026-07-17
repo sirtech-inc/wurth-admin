@@ -119,6 +119,7 @@
   "coupon_form_validator_quantity_required": "La cantidad es requerida",
   "coupon_form_validator_available_by_user_required": "La cantidad por usuario es requerida",
   "coupon_form_validator_apply_discount_required": "La opción es requerida",
+  "coupon_form_validator_actions_required": "Debes seleccionar al menos una acción: envío gratis o aplicar descuento",
   "coupon_form_validator_discount_required": "El descuento es requerido",
   "coupon_form_validator_amount_required": "El importe es requerido",
   "coupon_form_validator_apply_discount_to_required": "La opción es requerida",

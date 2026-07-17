@@ -312,7 +312,7 @@ export class FormCouponsComponent implements OnInit, OnDestroy {
 
             order_or_product: new FormControl(null),
             fk_product: new FormControl(null)
-        })
+        }, {validators: FormValidator.ActionsRequiredValidator})
     }
 
     onSave() {
