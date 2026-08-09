@@ -24,6 +24,7 @@ export interface Promotion {
     new_customer: string | boolean | number
     status: string | boolean | number
     amount: number
+    quantity?: number
     products: OptionalAll<PrepareOption>[]
     date_created: string
     date_updated: string

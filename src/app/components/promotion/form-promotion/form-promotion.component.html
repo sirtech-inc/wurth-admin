@@ -134,6 +134,23 @@
       </app-form-fields>
     </div>
     }
+
+    @if(form.controls['condition_promotion'].value === 2){
+    <div class="col">
+      <app-form-fields [inline]="'vertical'" [label]="'promotions_form_quantity'" [for]="'promotions_form_quantity'"
+        [required]="true">
+        <input type="text" class="form-control" id="promotions_form_quantity" formControlName="quantity" numbersOnly />
+        <div class="invalid-feedback"
+          *ngIf="form.controls['quantity'].touched && form.controls['quantity'].errors?.['required']">
+          {{ "promotion_form_validator_quantity_required" | translate }}
+        </div>
+        <div class="invalid-feedback"
+          *ngIf="form.controls['quantity'].touched && form.controls['quantity'].errors?.['invalidQuantity']">
+          {{ "global_form_quantity_invalid" | translate }}
+        </div>
+      </app-form-fields>
+    </div>
+    }
   </div>
   }
 

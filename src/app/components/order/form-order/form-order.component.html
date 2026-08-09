@@ -35,6 +35,22 @@
             </div>
             <div class="col-4">
                 <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Razón Social'" [for]="'razonSocial'" [required]="false">
+
+                    <input class="form-control" id="razonSocial" readonly type="text" placeholder="Razón Social"
+                        formControlName="razonSocial">
+                </app-form-fields>
+            </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Método de Pago'" [for]="'metodoPagoName'" [required]="false">
+
+                    <input class="form-control" id="metodoPagoName" readonly type="text" placeholder="Método de Pago"
+                        formControlName="metodoPagoName">
+                </app-form-fields>
+            </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
                     [label]="'Dirección Fiscal'" [for]="'direccionFiscal'" [required]="false">
 
                     <input class="form-control" id="direccionFiscal" readonly type="text" placeholder="Dirección Fiscal"
@@ -78,7 +94,9 @@
                         <td>{{ order.nameProducto }}</td>
                         <td>{{ order.codigoProducto }}</td>
                         <td>{{ order.cantidadTotalProducto }}</td>
-                        <td>{{ order.descuentoMaximoProducto | currency: 'S/' }}</td>
+                        <!-- Porcentaje, no importe. Y es `descuento_producto` (el aplicado), no
+                             `descuentomaximo_producto` (el tope), que vale 0 en las líneas del eshop -->
+                        <td>{{ (+order.descuentoProducto || 0) | number: '1.0-2' }}%</td>
                         <td>{{ order.precioUnitarioProducto | currency: 'S/' }}</td>
                         <td>{{ order.subTotalProducto | currency: 'S/'}}</td>
                     </tr>
@@ -88,6 +106,7 @@
             </table>
         </div>
 
+        <!-- Desglose real del pedido: subtotal - descuento + envío + IGV = total -->
         <div class="row mt-3">
             <div class="col-6"></div>
             <div class="col-4 text-end fw-bold">Subtotal:</div>
@@ -96,10 +115,32 @@
             </div>
         </div>
 
+        @if (descuentoCalculado > 0) {
+        <div class="row mt-3 text-success">
+            <div class="col-6"></div>
+            <div class="col-4 text-end fw-bold">
+                Descuento@if (cuponCodigo) { <small class="fw-normal"> ({{ cuponCodigo }})</small> }
+                @else if (descuentoEstimado) { <small class="fw-normal"> (cupón no registrado)</small> }:
+            </div>
+            <div class="col-2 text-end">
+                <span>- {{ descuentoCalculado | currency: 'S/' }}</span>
+            </div>
+        </div>
+        }
+
+        @if (fleteCalculado > 0) {
+        <div class="row mt-3">
+            <div class="col-6"></div>
+            <div class="col-4 text-end fw-bold">Envío:</div>
+            <div class="col-2 text-end">
+                <span>{{ fleteCalculado | currency: 'S/' }}</span>
+            </div>
+        </div>
+        }
 
         <div class="row mt-3">
             <div class="col-6"></div>
-            <div class="col-4 text-end fw-bold">IGV (18%):</div>
+            <div class="col-4 text-end fw-bold">IGV ({{ tasaIgv | number: '1.0-0' }}%):</div>
             <div class="col-2 text-end">
                 <span>{{ igvCalculado | currency: 'S/' }}</span>
             </div>

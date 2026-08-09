@@ -236,6 +236,7 @@ export class PromotionState {
             ...payload
         }
         delete _payload.amount;
+        delete _payload.quantity;
 
         return this.promotionService.createPromotion(_payload).pipe(
             tap({
@@ -395,7 +396,7 @@ export class PromotionState {
                 fk_code: 0,
                 fk_product: item.fk_product,
                 fk_promotion: payload.idPromotion,
-                amount: payload.amount
+                amount: Number(payload.amount) || 0
             }
             return _item
         })
@@ -426,7 +427,7 @@ export class PromotionState {
                 fk_code: 0,
                 fk_product: item.fk_product,
                 fk_promotion: payload.idPromotion,
-                quantity: item.quantity,
+                quantity: Number(item.quantity) || 0,
                 discount: item.discount
             }
             return _item

@@ -64,17 +64,8 @@
                             </app-form-fields>
                         </div>
                     }
-                } @else {
-                    @if (condition === 2) {
-                        <div class="col">
-                            <app-form-fields [inline]="'vertical'" [label]="'global_quantity'" [required]="true">
-                                <input type="text" class="form-control" formControlName="quantity"
-                                       numbersOnly
-                                />
-                            </app-form-fields>
-                        </div>
-                    }
                 }
+                <!-- La cantidad de "lleva gratis por cantidad" se define en el formulario de la promoción -->
 
             </div>
             @if (type === 'escala' || type === 'precio-final' || (type === 'lleva-gratis' && condition === 2)) {

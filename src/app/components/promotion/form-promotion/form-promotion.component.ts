@@ -137,22 +137,19 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
 
         this.form.controls.type.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
             if (this.opened) return
-            (this.form.get('products') as FormArray).clear()
-            
-            this.tableConfigScale.data = []
-            this.tableConfigFinalPrice.data = []
-            this.tableConfigBonusGiftAmount.data = []
-            this.tableConfigBonusGiftQuantity.data = []
+
+            this.clearProducts()
 
             if (value === 1) {
                 FormService.setRequiredSpecificFields(this.form, ['condition_promotion'], true)
             } else {
                 FormService.setRequiredSpecificFields(this.form, ['condition_promotion'], false)
-                FormService.setRequiredSpecificFields(this.form, ['amount'], false)
+                FormService.setRequiredSpecificFields(this.form, ['amount', 'quantity'], false)
+                this.form.controls.quantity.setValue(null)
                 this.form.controls.condition_promotion.setValue(null)
             }
-            FormService.updateValueAndValidityForFields(this.form, ['condition_promotion', 'amount'])
-            FormService.markFieldsAsTouched(this.form, ['condition_promotion', 'amount'])
+            FormService.updateValueAndValidityForFields(this.form, ['condition_promotion', 'amount', 'quantity'])
+            FormService.markFieldsAsTouched(this.form, ['condition_promotion', 'amount', 'quantity'])
         })
 
         this.form.controls.condition_promotion.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -164,18 +161,33 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
                 FormService.setRequiredSpecificFields(this.form, ['amount'], false)
             }
 
-            FormService.updateValueAndValidityForFields(this.form, ['amount'])
-            FormService.markFieldsAsTouched(this.form, ['amount'])
+            if (value === 2) { // Por cantidad
+                this.form.controls.quantity.setValidators([Validators.required, FormValidator.MinQuantityValidator])
+            } else {
+                FormService.setRequiredSpecificFields(this.form, ['quantity'], false)
+                this.form.controls.quantity.setValue(null)
+            }
+
+            FormService.updateValueAndValidityForFields(this.form, ['amount', 'quantity'])
+            FormService.markFieldsAsTouched(this.form, ['amount', 'quantity'])
         })
 
         this.form.controls.amount.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-            (this.form.get('products') as FormArray).clear()
-            this.tableConfigScale.data = []
-            this.tableConfigFinalPrice.data = []
-            this.tableConfigBonusGiftAmount.data = []
-            this.tableConfigBonusGiftQuantity.data = []
+            this.clearProducts()
         })
 
+        this.form.controls.quantity.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+            this.clearProducts()
+        })
+
+    }
+
+    private clearProducts() {
+        (this.form.get('products') as FormArray).clear()
+        this.tableConfigScale.data = []
+        this.tableConfigFinalPrice.data = []
+        this.tableConfigBonusGiftAmount.data = []
+        this.tableConfigBonusGiftQuantity.data = []
     }
 
     ngOnDestroy(): void {
@@ -303,12 +315,11 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
 
                                     response?.forEach((item, index) => {
                                         if (index === 0) {
-                                            (this.form.get('products') as FormArray).clear();
-                                            this.tableConfigScale.data = []
-                                            this.tableConfigFinalPrice.data = []
-                                            this.tableConfigBonusGiftAmount.data = []
-                                            this.tableConfigBonusGiftQuantity.data = []
+                                            this.clearProducts()
                                             this.form.controls.amount.setValue(item.amount || 0)
+                                            if (Number(promotion.condition_promotion) === 2) {
+                                                this.form.controls.quantity.setValue(item.quantity || 0)
+                                            }
                                         }
                                         this.onOnlyAddProduct(item)
                                     })
@@ -316,7 +327,7 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
                                 }
                             })
 
-                        FormService.enableDisableSpecificFields(this.form, ['type', 'condition_promotion', 'amount'], false)
+                        FormService.enableDisableSpecificFields(this.form, ['type', 'condition_promotion', 'amount', 'quantity'], false)
 
                     })
 
@@ -338,6 +349,7 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
             new_customer: new FormControl(null),
             status: new FormControl(null),
             amount: new FormControl(null),
+            quantity: new FormControl(null),
             products: this.formBuilder.array([] as OptionalAll<PrepareOption>[]),
         })
     }
@@ -383,13 +395,13 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
             item: new FormControl(totalItems + 1),
             code: new FormControl(product?.code || 0),
             fk_product: new FormControl(product?.fk_product || 0),
-            quantity: new FormControl(product?.quantity || 0),
+            quantity: new FormControl(Number(product?.quantity || this.form.get('quantity').getRawValue() || 0)),
             discount: new FormControl(product?.discount || 0),
             name: new FormControl(product?.name),
             reference: new FormControl(product?.reference),
             quantity_min: new FormControl(product?.quantity_min || 0),
             quantity_max: new FormControl(product?.quantity_max || 0),
-            amount: new FormControl(this.form.get('amount').getRawValue() || 0),
+            amount: new FormControl(Number(this.form.get('amount').getRawValue() || 0)),
             //amount: new FormControl(product?.amount || 0),
         })
     }
@@ -432,6 +444,9 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
             type: this.getType(),
             type_division: Array.isArray(division_extra) && division_extra.length > 0 ? division_extra : null,
             condition_promotion: Number(this.form.getRawValue().condition_promotion),
+            // El input es de texto: sin esto el API recibe "500" y rechaza el double con 400
+            amount: Number(this.form.getRawValue().amount) || 0,
+            quantity: Number(this.form.getRawValue().quantity) || 0,
             new_customer: this.form.value.new_customer === true || this.form.value.new_customer === 1 ? 'yes' : 'no',
             status: this.form.value.status === true || this.form.value.status === 1 ? 'active' : 'inactive',
         }

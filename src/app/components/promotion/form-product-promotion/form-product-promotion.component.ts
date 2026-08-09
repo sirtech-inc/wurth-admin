@@ -91,9 +91,9 @@ export class FormProductPromotionComponent implements OnInit, OnDestroy {
             FormService.setRequiredSpecificFields(this.form, ['quantity_max', 'quantity_min', 'discount'], false)
             FormService.updateValueAndValidityForFields(this.form, ['quantity_max', 'quantity_min', 'discount'])
         }
-        if (this.type === 'lleva-gratis' && this.condition === 2) { // por producto
-            FormService.setRequiredSpecificFields(this.form, ['quantity_min', 'quantity_max'], false)
-            FormService.setRequiredSpecificFields(this.form, ['quantity'], true)
+        if (this.type === 'lleva-gratis' && this.condition === 2) { // por cantidad
+            // La cantidad ya no se pide acá: la define el campo "Cantidad" del formulario de la promoción
+            FormService.setRequiredSpecificFields(this.form, ['quantity_min', 'quantity_max', 'quantity'], false)
             FormService.updateValueAndValidityForFields(this.form, ['quantity_min', 'quantity_max', 'quantity'])
         }
     }
