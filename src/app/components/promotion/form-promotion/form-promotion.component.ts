@@ -105,13 +105,16 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
         data: [],
         total: 0
     }
+    //  "Lleva gratis por cantidad": la cantidad que dispara la promoción es del carrito, no del
+    //  producto, así que no se muestra por fila (es la misma para todas, y está arriba en el campo
+    //  "Cantidad"). La cant. mínima de la fila es siempre 1: se regala una unidad de cada producto.
+    //  Tampoco se muestra descuento porque el regalo siempre va al 100%.
     public tableConfigBonusGiftQuantity: TableConfig = {
         columns: [
             { title: 'promotion_form_table_item', dataField: 'item', colSmall: true },
             { title: 'promotion_form_table_prod_code', dataField: 'reference' },
             { title: 'promotion_form_table_prod_name', dataField: 'name' },
-            { title: 'promotion_form_table_min_quantity', dataField: 'quantity' },
-            { title: 'promotion_form_table_discount', dataField: 'discount' },
+            { title: 'promotion_form_table_min_quantity', dataField: 'quantity_min' },
         ],
         rowActions: [
             { label: "global_delete", actionToPerform: "delete", icon: "ri-delete-bin-line" }
@@ -391,15 +394,21 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
 
     private initItemsProduct(product?: Partial<PrepareOption>) {
         const totalItems = (this.form.get('products') as FormArray).length
+        //  En "lleva gratis por cantidad" la fila no configura nada propio: `quantity` lleva el umbral
+        //  de piezas del carrito (el mismo para todas las filas, igual que `amount` en "por monto"),
+        //  la cant. mínima es siempre 1 y el descuento siempre 100 porque el regalo es gratis.
+        const esLlevaGratisPorCantidad = this.getType() === 'lleva-gratis'
+            && Number(this.form.getRawValue().condition_promotion) === 2
+
         return this.formBuilder.group<PromotionProductForm>({
             item: new FormControl(totalItems + 1),
             code: new FormControl(product?.code || 0),
             fk_product: new FormControl(product?.fk_product || 0),
             quantity: new FormControl(Number(product?.quantity || this.form.get('quantity').getRawValue() || 0)),
-            discount: new FormControl(product?.discount || 0),
+            discount: new FormControl(esLlevaGratisPorCantidad ? 100 : (product?.discount || 0)),
             name: new FormControl(product?.name),
             reference: new FormControl(product?.reference),
-            quantity_min: new FormControl(product?.quantity_min || 0),
+            quantity_min: new FormControl(esLlevaGratisPorCantidad ? 1 : (product?.quantity_min || 0)),
             quantity_max: new FormControl(product?.quantity_max || 0),
             amount: new FormControl(Number(this.form.get('amount').getRawValue() || 0)),
             //amount: new FormControl(product?.amount || 0),

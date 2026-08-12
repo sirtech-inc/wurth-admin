@@ -427,8 +427,12 @@ export class PromotionState {
                 fk_code: 0,
                 fk_product: item.fk_product,
                 fk_promotion: payload.idPromotion,
+                //  `quantity` es el umbral de piezas del carrito que dispara la promoción, no una
+                //  cantidad del producto. Se guarda replicado en cada fila, igual que `amount` en
+                //  "lleva gratis por monto".
                 quantity: Number(item.quantity) || 0,
-                discount: item.discount
+                //  El regalo siempre es gratis: no se guarda el descuento que venga de la fila.
+                discount: 100
             }
             return _item
         })

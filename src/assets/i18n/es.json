@@ -541,7 +541,7 @@
   "promotions_form_only_new_customer": "Solo para nuevos clientes",
   "promotions_form_condition": "Condición promoción",
   "promotions_form_amount": "Monto promoción",
-  "promotions_form_quantity": "Cantidad",
+  "promotions_form_quantity": "Cantidad de productos en el carrito",
   "promotions_form_btn_add_item": "Agregar producto",
   "promotions_modal_title": "Agregar producto",
   "promotions_modal_product": "Producto",

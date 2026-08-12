@@ -353,12 +353,17 @@ export class UploadPromotionComponent implements OnInit, OnDestroy {
                     const products: OptionalAll<PrepareOption>[] = item.map((product) => {
                         return {
                             code: 0,
-                            discount: Number(product[4]),
+                            //  El regalo siempre es gratis: la columna de descuento del Excel se ignora
+                            //  a propósito. Antes entraba tal cual y sin validar (el form la limita a
+                            //  99.99, la importación no), así que una fila con otro valor terminaba
+                            //  cobrándole al cliente un producto anunciado como regalo.
+                            discount: 100,
                             item: 0,
                             name: null,
+                            //  Umbral de piezas en el carrito que dispara la promoción.
                             quantity: Number(product[3]),
                             quantity_max: 0,
-                            quantity_min: 0,
+                            quantity_min: 1,
                             reference: product[1]
                         }
                     })

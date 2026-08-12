@@ -65,10 +65,12 @@
                         </div>
                     }
                 }
-                <!-- La cantidad de "lleva gratis por cantidad" se define en el formulario de la promoción -->
+                <!-- "Lleva gratis" no pide nada por producto: la cantidad de piezas que dispara la
+                     promoción se define en el formulario de la promoción, y el regalo siempre va al
+                     100% de descuento, así que tampoco se pide descuento. -->
 
             </div>
-            @if (type === 'escala' || type === 'precio-final' || (type === 'lleva-gratis' && condition === 2)) {
+            @if (type === 'escala' || type === 'precio-final') {
                 <div class="row">
                     <app-form-fields [inline]="'vertical'" [label]="'promotions_modal_discount'" [required]="true">
                         <input type="text" class="form-control" formControlName="discount"

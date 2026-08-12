@@ -77,7 +77,11 @@ export class PacksComponent implements OnInit, OnDestroy {
         this.store.dispatch(new GetPacks(this.currentParams));
       },
       error: (error) => {
-        const message = error?.error?.message || 'No se pudo eliminar el pack';
+        //  El API responde 409 con el motivo en result.detail cuando el pack está en pedidos o
+        //  carritos. Se muestra ese texto: antes se caía al genérico y el usuario no sabía por qué.
+        const message = error?.error?.result?.detail
+          || error?.error?.message
+          || 'No se pudo eliminar el pack';
         this.notificationService.showError(message, 'Aviso');
       }
     });

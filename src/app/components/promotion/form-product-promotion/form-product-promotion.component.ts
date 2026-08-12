@@ -92,9 +92,11 @@ export class FormProductPromotionComponent implements OnInit, OnDestroy {
             FormService.updateValueAndValidityForFields(this.form, ['quantity_max', 'quantity_min', 'discount'])
         }
         if (this.type === 'lleva-gratis' && this.condition === 2) { // por cantidad
-            // La cantidad ya no se pide acá: la define el campo "Cantidad" del formulario de la promoción
-            FormService.setRequiredSpecificFields(this.form, ['quantity_min', 'quantity_max', 'quantity'], false)
-            FormService.updateValueAndValidityForFields(this.form, ['quantity_min', 'quantity_max', 'quantity'])
+            // Acá no se pide nada más que el producto: la cantidad de piezas que dispara la promoción
+            // la define el campo "Cantidad" del formulario de la promoción, y el regalo siempre sale
+            // al 100% de descuento (el descuento por producto ya no existe para esta condición).
+            FormService.setRequiredSpecificFields(this.form, ['quantity_min', 'quantity_max', 'quantity', 'discount'], false)
+            FormService.updateValueAndValidityForFields(this.form, ['quantity_min', 'quantity_max', 'quantity', 'discount'])
         }
     }
 
