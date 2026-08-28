@@ -12,10 +12,15 @@
 
                                 <app-form-fields [labelWidth]="4" [inline]="'horizontal'" [label]="'carriers_name'"
                                                  [for]="'name'" [required]="true">
-                                    <input class="form-control" id="name" type="text" formControlName="name">
+                                    <input class="form-control" id="name" type="text" formControlName="name" maxlength="75">
                                     @if (getErrors('carrier', 'name') && getErrors('carrier', 'name').required) {
                                         <div class="invalid-feedback">
                                             {{ "carriers_form_validator_name_required" | translate }}
+                                        </div>
+                                    }
+                                    @if (getErrors('carrier', 'name') && getErrors('carrier', 'name').maxlength) {
+                                        <div class="invalid-feedback">
+                                            {{ "carriers_form_validator_name_maxlength" | translate }}
                                         </div>
                                     }
                                 </app-form-fields>

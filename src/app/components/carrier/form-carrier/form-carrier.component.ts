@@ -115,7 +115,10 @@ export class FormCarrierComponent implements OnInit, OnDestroy {
         this.form = this.formBuilder.group<GroupCarrierForm>({
             carrier: this.formBuilder.group<CustomeFormControl<OptionalAll<Carrier>>>({
                 code: new FormControl(null, [FormValidator.PositiveIntegerValidator]),
-                name: new FormControl(null, [Validators.required]),
+                //  Limite del backend: wurth_carrier.name es varchar(75) (ver
+                //  db/2026-08-28_revert_carrier_name_75.sql). No se puede ampliar en la base de
+                //  produccion, asi que se controla aca para no depender del error 22001 del backend.
+                name: new FormControl(null, [Validators.required, Validators.maxLength(75)]),
                 description: new FormControl(null),
                 image: new FormControl(null, [FormValidator.PositiveIntegerValidator]),
                 status: new FormControl(null),

@@ -518,6 +518,7 @@
   "carriers_short_description": "Descripción corta",
   "carriers_tax_included": "Impuesto incluido",
   "carriers_form_validator_name_required": "El nombre es requerido",
+  "carriers_form_validator_name_maxlength": "El nombre no puede superar los 75 caracteres",
   "carriers_table_code": "Código",
   "carriers_table_name": "Nombre",
   "carriers_table_description": "Descripción",
