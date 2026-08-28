@@ -13,7 +13,8 @@ export interface OrdenDto {
   subtotal?: string,
   igv?: string,
   totalCalculado?: string,
-  metodoPagoName?: string
+  metodoPagoName?: string,
+  archivoOc1?: string
 }
 
 export type OrdenForm = OrdenFormControl<OptionalAll<OrdenDto>>

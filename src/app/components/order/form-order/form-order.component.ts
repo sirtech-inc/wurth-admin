@@ -5,6 +5,7 @@ import { PedidoService } from '@shared/services/pedido.service';
 import { TypeForm } from 'src/app/shared/types/util.types';
 import { OrdenDto, OrdenForm, OrderDetailDto } from '@shared/interface/orden.interface';
 import { ActivatedRoute } from '@angular/router';
+import { NotificationService } from '@shared/services/index.service';
 @Component({
   selector: 'app-form-order',
   templateUrl: './form-order.component.html',
@@ -29,11 +30,14 @@ export class FormOrderComponent implements OnInit {
   public tasaIgv: number = 18;
   public cuponCodigo: string = '';
   public descuentoEstimado: boolean = false;
+  public archivoOc1: string = '';
+  public descargandoArchivoOc: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private pedidoservice: PedidoService
+    private pedidoservice: PedidoService,
+    private notificationService: NotificationService
   ) { }
 
 
@@ -101,6 +105,7 @@ export class FormOrderComponent implements OnInit {
           this.tasaIgv = Number(res.tasaIgv ?? 18);
           this.cuponCodigo = res.cuponCodigo ?? '';
           this.descuentoEstimado = res.descuentoEstimado ?? false;
+          this.archivoOc1 = res.archivoOc1 ?? '';
 
           this.form.patchValue({
             subtotal: this.subtotalCalculado.toString(),
@@ -112,6 +117,27 @@ export class FormOrderComponent implements OnInit {
       })
 
     }
+  }
+
+  descargarArchivoOc() {
+    if (!this.archivoOc1 || this.descargandoArchivoOc) return;
+
+    this.descargandoArchivoOc = true;
+    this.pedidoservice.downloadArchivoOc(this.archivoOc1).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = this.archivoOc1;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.descargandoArchivoOc = false;
+      },
+      error: () => {
+        this.descargandoArchivoOc = false;
+        this.notificationService.showError('No se pudo descargar el archivo adjunto.', 'Aviso');
+      }
+    });
   }
 
 }

@@ -39,6 +39,12 @@ export class PedidoService {
         return this.http.get<OrderPedidoDto>(`${environment.API_URL}/Order/pedido/${idOrden}`);
     }
 
+    //  Via HttpClient (no <a href> directo) para que pase por el interceptor y lleve el
+    //  header X-API-Key que exige ApiKeyMiddleware; un enlace plano daria 401.
+    downloadArchivoOc(vArchivo: string): Observable<Blob> {
+        return this.http.get(`${environment.API_URL}/DownUpFiles/download?vArchivo=${encodeURIComponent(vArchivo)}`, { responseType: 'blob' });
+    }
+
     getOrden(payload?: Params): Observable<ResponseModel<OrdersData>> {
         const api = `${environment.API_URL}/Order/ListadoGeneral`;
         return this.apiCoreService

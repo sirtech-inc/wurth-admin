@@ -73,6 +73,21 @@
                         placeholder="Lugar de Destino" formControlName="lugarDestino">
                 </app-form-fields>
             </div>
+            <div class="col-4">
+                <app-form-fields [labelClass]="'form-label-title col-sm-6 mb-0'" [gridClass]="'col-sm-9'"
+                    [label]="'Orden de Compra'" [for]="'archivoOc1'" [required]="false">
+
+                    @if (archivoOc1) {
+                    <app-button [classExtra]="'btn-outline-secondary btn-sm'" [type]="'button'" [spinner]="false"
+                        [disabled]="descargandoArchivoOc" (click)="descargarArchivoOc()">
+                        {{ descargandoArchivoOc ? 'Descargando...' : 'Descargar adjunto' }}
+                    </app-button>
+                    } @else {
+                    <input class="form-control" id="archivoOc1" readonly type="text"
+                        placeholder="Sin archivo adjunto" value="Sin archivo adjunto">
+                    }
+                </app-form-fields>
+            </div>
         </div>
 
         <div class="table-responsive datatable-wrapper border-table">
