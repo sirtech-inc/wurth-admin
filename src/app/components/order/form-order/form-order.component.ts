@@ -29,6 +29,7 @@ export class FormOrderComponent implements OnInit {
   public descuentoCalculado: number = 0;
   public tasaIgv: number = 18;
   public cuponCodigo: string = '';
+  public cuponPorcentaje: number | null = null;
   public descuentoEstimado: boolean = false;
   public archivoOc1: string = '';
   public descargandoArchivoOc: boolean = false;
@@ -104,6 +105,7 @@ export class FormOrderComponent implements OnInit {
           this.descuentoCalculado = Number(res.descuento ?? 0);
           this.tasaIgv = Number(res.tasaIgv ?? 18);
           this.cuponCodigo = res.cuponCodigo ?? '';
+          this.cuponPorcentaje = res.cuponPorcentaje ?? null;
           this.descuentoEstimado = res.descuentoEstimado ?? false;
           this.archivoOc1 = res.archivoOc1 ?? '';
 

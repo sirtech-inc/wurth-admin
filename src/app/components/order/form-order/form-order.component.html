@@ -110,8 +110,20 @@
                         <td>{{ order.codigoProducto }}</td>
                         <td>{{ order.cantidadTotalProducto }}</td>
                         <!-- Porcentaje, no importe. Y es `descuento_producto` (el aplicado), no
-                             `descuentomaximo_producto` (el tope), que vale 0 en las líneas del eshop -->
+                             `descuentomaximo_producto` (el tope), que vale 0 en las líneas del eshop.
+                             Cuando el pedido tiene cupón, `descuentoProducto` deja de ser el % de la
+                             promoción propia del producto y pasa a ser el % del cupón prorrateado
+                             (ver el comentario de ProrratearDescuento en el backend); en ese caso se
+                             muestran los dos por separado con `descuentoPromocionProducto`. -->
+                        @if (order.descuentoPromocionProducto && +order.descuentoPromocionProducto > 0 && (+order.descuentoPromocionProducto | number: '1.0-2') !== (+order.descuentoProducto | number: '1.0-2')) {
+                        <td>
+                            {{ +order.descuentoPromocionProducto | number: '1.0-2' }}% promo
+                            <br>
+                            <small class="text-muted">-{{ +order.descuentoProducto | number: '1.0-2' }}% cupón</small>
+                        </td>
+                        } @else {
                         <td>{{ (+order.descuentoProducto || 0) | number: '1.0-2' }}%</td>
+                        }
                         <td>{{ order.precioUnitarioProducto | currency: 'S/' }}</td>
                         <td>{{ order.subTotalProducto | currency: 'S/'}}</td>
                     </tr>
@@ -134,7 +146,7 @@
         <div class="row mt-3 text-success">
             <div class="col-6"></div>
             <div class="col-4 text-end fw-bold">
-                Descuento@if (cuponCodigo) { <small class="fw-normal"> ({{ cuponCodigo }})</small> }
+                Descuento@if (cuponCodigo) { <small class="fw-normal"> ({{ cuponCodigo }}@if (cuponPorcentaje > 0) { &nbsp;-&nbsp;{{ cuponPorcentaje | number: '1.0-2' }}% })</small> }
                 @else if (descuentoEstimado) { <small class="fw-normal"> (cupón no registrado)</small> }:
             </div>
             <div class="col-2 text-end">
