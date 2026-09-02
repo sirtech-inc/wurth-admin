@@ -31,6 +31,9 @@ export interface OrderDetailDto {
   descuentoPromocionProducto?: string | null;
   descuentoMaximoProducto: string;
   precioUnitarioProducto: string;
+  // Precio de lista SIN ningun descuento (ni promocion propia ni cupon), solo informativo. null en
+  // pedidos anteriores a este campo: ahi se cae a precioUnitarioProducto para mostrar algo.
+  precioListaProducto?: string | null;
   subTotalProducto: string;
   nameProducto: string;
 }

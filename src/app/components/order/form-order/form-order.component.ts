@@ -99,7 +99,11 @@ export class FormOrderComponent implements OnInit {
           const totalNumber = parseFloat(res.total ?? '0');
 
           this.totalCalculado = totalNumber;
-          this.subtotalCalculado = Number(res.subtotal ?? 0);
+          // Subtotal MOSTRADO: la suma de los subtotales de línea (ya netos, con su parte del cupón
+          // descontada), no `res.subtotal` (el bruto que devuelve el backend). Son matemáticamente
+          // equivalentes (bruto - descuento = esta suma), pero mostrar la suma real evita la
+          // confusión de tener un "Subtotal" que no cuadra a simple vista contra la tabla de arriba.
+          this.subtotalCalculado = this.orderDetails.reduce((acc, detalle) => acc + (+detalle.subTotalProducto || 0), 0);
           this.igvCalculado = Number(res.igv ?? 0);
           this.fleteCalculado = Number(res.flete ?? 0);
           this.descuentoCalculado = Number(res.descuento ?? 0);
