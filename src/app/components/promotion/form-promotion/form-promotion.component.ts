@@ -295,19 +295,31 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
                                     mergeMap(() => this.store.select(PromotionState.selectedPromotion)))
                             })
                     ).pipe(takeUntil(this.destroy$)).subscribe(promotion => {
-                        //  El catalogo (ecommerce$/type_promotion$/division$/condition_promotion$) ya
-                        //  esta en el store llegado este punto (el forkJoin de arriba espera la
-                        //  respuesta HTTP de las 4, no solo el dispatch), pero el <select2> arma sus
-                        //  <option> a partir del binding `[data]="...$ | async"`, que recien se pinta
-                        //  en el DOM en el siguiente ciclo de deteccion de cambios. Si `formControlName`/
-                        //  `[value]` intentan seleccionar un valor ANTES de que esas opciones existan
-                        //  en el DOM, el widget se queda sin nada marcado -- por eso "tipo de tienda" y
-                        //  "division" no se rellenaban al editar. Se difiere al proximo macrotask (mismo
-                        //  patron que ya usan onShowModal/onShowModalEdit en este archivo) para que la
-                        //  seleccion se aplique DESPUES de que el <select2> ya tenga sus opciones.
+                        //  El setTimeout deja un margen para que el <select2> ya haya pintado sus
+                        //  <option> (via `[data]="...$ | async"`) antes de setear la seleccion -- mismo
+                        //  patron que onShowModal/onShowModalEdit en este archivo. Pero la causa real de
+                        //  que "tipo de tienda"/"division" no se rellenaran era otra (ver el comentario
+                        //  junto a `ecommerce`/`type_division` mas abajo): no era una carrera de tiempos
+                        //  (esa afectaria por igual a los 4 selects), era que esos dos campos nunca se
+                        //  convertian al value numerico del catalogo antes de patchValue.
                         setTimeout(() => {
                             this.id = promotion?.code || 0
                             const type = this.parameterService.getValueByOther(promotion?.type.toString(), 'type_promotion').at(0)
+                            //  "Tipo de promocion"/"Condicion promocion" SI se rellenaban porque type ya
+                            //  se convertia (arriba) al value numerico del <select2> antes de patchValue.
+                            //  "Tipo de tienda"/"Tipo de division" NO, porque el spread de ...promotion
+                            //  metia el string crudo de la API (ej. "b2b", ["auto","metal",...]) en el
+                            //  FormControl -- y ese es el que gana (via ControlValueAccessor.writeValue)
+                            //  sobre el binding [value]="prepareEcommerce/prepareDivision" del template,
+                            //  que solo queda de adorno si el FormControl no tiene ya el valor correcto.
+                            //  Se convierten igual que type, ANTES de patchValue.
+                            //  El as unknown as ... es solo para el chequeo de tipos: PromotionForm
+                            //  declara ecommerce/type_division como string/string[] (heredado de
+                            //  Promotion), pero el <select2> necesita el value NUMERICO del catalogo
+                            //  para que la opcion quede marcada (mismo caso que `type`, que ya acepta
+                            //  string | number y no necesita este cast).
+                            const ecommerce = this.parameterService.getValueByOther(promotion?.ecommerce, 'ecommerce').at(0) as unknown as string
+                            const type_division = this.parameterService.getValueByOther(promotion?.type_division, 'division') as unknown as string[]
                             //  emitEvent: false -- sin esto, patchValue dispara type.valueChanges (ver
                             //  ngOnInit) ANTES de terminar de aplicar el resto de campos de este mismo
                             //  patchValue, y ese handler resetea condition_promotion/amount/quantity a
@@ -316,12 +328,25 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
                             this.form.patchValue({
                                 ...promotion,
                                 type: type,
+                                ecommerce: ecommerce,
+                                type_division: type_division,
                                 amount: promotion?.amount || 0,
                                 status: !!(promotion?.status === 'active' || promotion?.status === 1),
                                 new_customer: !!(promotion?.new_customer === 'yes' || promotion?.new_customer === 1)
                             }, { emitEvent: false })
                             this.fromDate = promotion?.availability_start ? NgbDate.from(this.formatter.parse(promotion?.availability_start)) : null
                             this.toDate = promotion?.availability_end ? NgbDate.from(this.formatter.parse(promotion?.availability_end)) : null
+
+                            //  El patchValue de arriba pone availability_start/end tal como los manda
+                            //  la API (ej. "2026-09-02T00:00:00"), sin pasar por el formatter -- por
+                            //  eso el input de texto mostraba el ISO crudo en vez de la fecha
+                            //  formateada, aunque el calendario (fromDate/toDate) ya resolvia bien el
+                            //  dia. Se pisa el valor del control con el mismo formato que usa
+                            //  onDateSelection() al elegir una fecha a mano.
+                            this.form.patchValue({
+                                availability_start: this.fromDate ? this.formatter.format(this.fromDate) : null,
+                                availability_end: this.toDate ? this.formatter.format(this.toDate) : null
+                            }, { emitEvent: false })
 
                             this.prepareEcommerce = this.parameterService.getValueByOther(promotion.ecommerce, 'ecommerce').at(0)
                             this.prepareType = this.parameterService.getValueByOther(promotion.type.toString(), 'type_promotion').at(0)
