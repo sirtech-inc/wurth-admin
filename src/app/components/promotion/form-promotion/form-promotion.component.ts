@@ -295,43 +295,59 @@ export class FormPromotionComponent implements OnInit, OnDestroy {
                                     mergeMap(() => this.store.select(PromotionState.selectedPromotion)))
                             })
                     ).pipe(takeUntil(this.destroy$)).subscribe(promotion => {
-                        this.id = promotion?.code || 0
-                        const type = this.parameterService.getValueByOther(promotion?.type.toString(), 'type_promotion').at(0)
-                        this.form.patchValue({
-                            ...promotion,
-                            type: type,
-                            amount: promotion?.amount || 0,
-                            status: !!(promotion?.status === 'active' || promotion?.status === 1),
-                            new_customer: !!(promotion?.new_customer === 'yes' || promotion?.new_customer === 1)
-                        })
-                        this.fromDate = promotion?.availability_start ? NgbDate.from(this.formatter.parse(promotion?.availability_start)) : null
-                        this.toDate = promotion?.availability_end ? NgbDate.from(this.formatter.parse(promotion?.availability_end)) : null
+                        //  El catalogo (ecommerce$/type_promotion$/division$/condition_promotion$) ya
+                        //  esta en el store llegado este punto (el forkJoin de arriba espera la
+                        //  respuesta HTTP de las 4, no solo el dispatch), pero el <select2> arma sus
+                        //  <option> a partir del binding `[data]="...$ | async"`, que recien se pinta
+                        //  en el DOM en el siguiente ciclo de deteccion de cambios. Si `formControlName`/
+                        //  `[value]` intentan seleccionar un valor ANTES de que esas opciones existan
+                        //  en el DOM, el widget se queda sin nada marcado -- por eso "tipo de tienda" y
+                        //  "division" no se rellenaban al editar. Se difiere al proximo macrotask (mismo
+                        //  patron que ya usan onShowModal/onShowModalEdit en este archivo) para que la
+                        //  seleccion se aplique DESPUES de que el <select2> ya tenga sus opciones.
+                        setTimeout(() => {
+                            this.id = promotion?.code || 0
+                            const type = this.parameterService.getValueByOther(promotion?.type.toString(), 'type_promotion').at(0)
+                            //  emitEvent: false -- sin esto, patchValue dispara type.valueChanges (ver
+                            //  ngOnInit) ANTES de terminar de aplicar el resto de campos de este mismo
+                            //  patchValue, y ese handler resetea condition_promotion/amount/quantity a
+                            //  null si el tipo no es "lleva-gratis", pisando el valor que se acaba de
+                            //  cargar de la promocion.
+                            this.form.patchValue({
+                                ...promotion,
+                                type: type,
+                                amount: promotion?.amount || 0,
+                                status: !!(promotion?.status === 'active' || promotion?.status === 1),
+                                new_customer: !!(promotion?.new_customer === 'yes' || promotion?.new_customer === 1)
+                            }, { emitEvent: false })
+                            this.fromDate = promotion?.availability_start ? NgbDate.from(this.formatter.parse(promotion?.availability_start)) : null
+                            this.toDate = promotion?.availability_end ? NgbDate.from(this.formatter.parse(promotion?.availability_end)) : null
 
-                        this.prepareEcommerce = this.parameterService.getValueByOther(promotion.ecommerce, 'ecommerce').at(0)
-                        this.prepareType = this.parameterService.getValueByOther(promotion.type.toString(), 'type_promotion').at(0)
-                        this.prepareDivision = this.parameterService.getValueByOther(promotion.type_division, 'division');
+                            this.prepareEcommerce = this.parameterService.getValueByOther(promotion.ecommerce, 'ecommerce').at(0)
+                            this.prepareType = this.parameterService.getValueByOther(promotion.type.toString(), 'type_promotion').at(0)
+                            this.prepareDivision = this.parameterService.getValueByOther(promotion.type_division, 'division');
 
-                        this.store.select(PromotionState.selectedPromotionItems).pipe(
-                            delay(100),
-                            takeUntil(this.destroy$)).subscribe({
-                                next: (response) => {
+                            this.store.select(PromotionState.selectedPromotionItems).pipe(
+                                delay(100),
+                                takeUntil(this.destroy$)).subscribe({
+                                    next: (response) => {
 
-                                    response?.forEach((item, index) => {
-                                        if (index === 0) {
-                                            this.clearProducts()
-                                            this.form.controls.amount.setValue(item.amount || 0)
-                                            if (Number(promotion.condition_promotion) === 2) {
-                                                this.form.controls.quantity.setValue(item.quantity || 0)
+                                        response?.forEach((item, index) => {
+                                            if (index === 0) {
+                                                this.clearProducts()
+                                                this.form.controls.amount.setValue(item.amount || 0)
+                                                if (Number(promotion.condition_promotion) === 2) {
+                                                    this.form.controls.quantity.setValue(item.quantity || 0)
+                                                }
                                             }
-                                        }
-                                        this.onOnlyAddProduct(item)
-                                    })
-                                    this.onOnlySetProductInTable(promotion.type.toString())
-                                }
-                            })
+                                            this.onOnlyAddProduct(item)
+                                        })
+                                        this.onOnlySetProductInTable(promotion.type.toString())
+                                    }
+                                })
 
-                        FormService.enableDisableSpecificFields(this.form, ['type', 'condition_promotion', 'amount', 'quantity'], false)
-
+                            FormService.enableDisableSpecificFields(this.form, ['type', 'condition_promotion', 'amount', 'quantity'], false)
+                        })
                     })
 
             }
